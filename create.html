@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Item</title>
+    <style>
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .user-info {
+            display: flex;
+            align-items: center;
+        }
+        .user-info img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+        .popup {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: white;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+        }
+        .popup button {
+            margin-top: 10px;
+        }
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Create New Item</h1>
+        <div class="user-info" id="userInfo">
+            <!-- User info will be dynamically inserted here -->
+        </div>
+    </div>
+    <form id="createForm">
+        <label for="name">Name:</label><br>
+        <input type="text" id="name" name="name" required><br><br>
+        <label for="image">Image:</label><br>
+        <input type="file" id="image" name="image" accept="image/*" required><br><br>
+        <label for="countdown">Countdown (in seconds):</label><br>
+        <input type="number" id="countdown" name="countdown" required><br><br>
+        <label for="description">Description:</label><br>
+        <textarea id="description" name="description" required></textarea><br><br>
+        <button type="button" onclick="createItem()">Create</button>
+        <button type="button" onclick="window.location.href='index.html'">Back</button>
+    </form>
+
+    <div id="popup" class="popup" style="display:none;">
+        <p>Project successfully launched, here is your launch code:</p>
+        <p id="launchCode" style="font-weight: bold;"></p>
+        <button onclick="copyCode()">Copy Code</button>
+        <p id="copyMessage" style="display:none;">Code copied to clipboard</p>
+        <p>It is essential to copy this code and save it for launch.</p>
+        <button onclick="closePopup()">I have saved my code, return to home screen</button>
+    </div>
+    <div id="overlay" class="overlay" style="display:none;"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@solana/web3.js"></script>
+    <script src="user.js"></script>
+    <script>
+        function generateRandomCode(length) {
+            const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+            let result = '';
+            for (let i = 0; i < length; i++) {
+                result += characters.charAt(Math.floor(Math.random() * characters.length));
+            }
+            return result;
+        }
+
+        function createItem() {
+            const name = document.getElementById('name').value;
+            const imageInput = document.getElementById('image');
+            const countdown = parseInt(document.getElementById('countdown').value, 10);
+            const description = document.getElementById('description').value;
+            const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+
+            if (imageInput.files && imageInput.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const image = e.target.result;
+                    const endTime = new Date().getTime() + countdown * 1000;
+                    const items = JSON.parse(localStorage.getItem('items')) || [];
+                    const launchCode = generateRandomCode(12);
+                    items.unshift({ name, image, endTime, description, creator: currentUser.publicKey, launchCode });
+                    localStorage.setItem('items', JSON.stringify(items));
+
+                    // Display the launch code in the pop-up
+                    document.getElementById('launchCode').innerText = launchCode;
+                    document.getElementById('popup').style.display = 'block';
+                    document.getElementById('overlay').style.display = 'block';
+                };
+                reader.readAsDataURL(imageInput.files[0]);
+            } else {
+                alert('Please select an image.');
+            }
+        }
+
+        function copyCode() {
+            const launchCode = document.getElementById('launchCode').innerText;
+            navigator.clipboard.writeText(launchCode).then(() => {
+                document.getElementById('copyMessage').style.display = 'block';
+            });
+        }
+
+        function closePopup() {
+            document.getElementById('popup').style.display = 'none';
+            document.getElementById('overlay').style.display = 'none';
+            window.location.href = 'index.html';
+        }
+
+        window.addEventListener('load', () => {
+            displayUserInfo();
+            const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+            if (!currentUser) {
+                alert('Please connect your wallet first.');
+                window.location.href = 'index.html';
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Item Detail</title>
+    <style>
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .user-info {
+            display: flex;
+            align-items: center;
+        }
+        .user-info img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+        .popup {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: white;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+        }
+        .popup button {
+            margin-top: 10px;
+        }
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Item Detail</h1>
+        <div class="user-info" id="userInfo">
+            <!-- User info will be dynamically inserted here -->
+        </div>
+    </div>
+    <div id="itemDetail"></div>
+    <button onclick="window.location.href='index.html'">Back</button>
+
+    <div id="popup" class="popup" style="display:none;">
+        <p>New launch on Pump.fun!</p>
+        <a id="pumpFunLink" href="" target="_blank">Buy on Pump.fun now!</a>
+        <button onclick="closePopup()">Close</button>
+    </div>
+    <div id="overlay" class="overlay" style="display:none;"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@solana/web3.js"></script>
+    <script src="user.js"></script>
+    <script>
+        async function loadItemDetails() {
+            const item = JSON.parse(localStorage.getItem('selectedItem'));
+            if (item) {
+                const creator = getUser(item.creator);
+                document.getElementById('itemDetail').innerHTML = `
+                    <h2>${item.name}</h2>
+                    <small>Created by: ${creator ? creator.username : 'Unknown'}</small>
+                    <img src="${item.image}" alt="${item.name}" width="100" height="100">
+                    <p>Countdown: ${calculateRemainingTime(item.endTime)}</p>
+                    <p>Description: ${item.description}</p>
+                `;
+                startCountdown(item);
+                setInterval(() => fetchPumpFunData(item), 1000); // Check Pump.fun every second
+
+                // Show popup if item already has a Pump.fun link
+                if (item.pumpFunLink) {
+                    showPumpFunPopup(item.pumpFunLink);
+                }
+            } else {
+                document.getElementById('itemDetail').innerHTML = '<p>No item selected</p>';
+            }
+        }
+
+        function startCountdown(item) {
+            const countdownElement = document.querySelector('#itemDetail p:nth-child(4)');
+            const intervalId = setInterval(() => {
+                const remainingTime = calculateRemainingTime(item.endTime);
+                countdownElement.textContent = `Countdown: ${remainingTime}`;
+                if (remainingTime === 'Expired') {
+                    clearInterval(intervalId);
+                }
+            }, 1000);
+        }
+
+        function calculateRemainingTime(endTime) {
+            const now = new Date().getTime();
+            const timeLeft = endTime - now;
+            if (timeLeft <= 0) {
+                return 'Expired';
+            }
+            const mins = Math.floor(timeLeft / 1000 / 60);
+            const secs = Math.floor((timeLeft / 1000) % 60);
+            return `${mins}m ${secs}s`;
+        }
+
+        async function fetchPumpFunData(item) {
+            try {
+                const response = await fetch('/.netlify/functions/fetchPumpFunData');
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                const text = await response.text();
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(text, 'text/html');
+                console.log('Fetched data:', doc); // Log the fetched document for debugging
+
+                const launches = doc.querySelectorAll('.project-card'); // Adjust the selector to match Pump.fun's structure
+                console.log('Launches found:', launches.length); // Log the number of launches found
+
+                launches.forEach(launch => {
+                    const descriptionElement = launch.querySelector('.description'); // Adjust the selector
+                    const linkElement = launch.querySelector('a'); // Adjust the selector
+
+                    if (descriptionElement && linkElement) {
+                        const description = descriptionElement.innerText;
+                        const link = linkElement.href;
+
+                        console.log('Checking launch:', description, link); // Log each launch being checked
+
+                        if (description.includes(item.launchCode)) {
+                            console.log('Match found:', link); // Log the match found
+                            item.pumpFunLink = link;
+                            localStorage.setItem('selectedItem', JSON.stringify(item));
+                            showPumpFunPopup(link);
+                        }
+                    }
+                });
+            } catch (error) {
+                console.error('Error checking Pump.fun data:', error);
+            }
+        }
+
+        function showPumpFunPopup(link) {
+            document.getElementById('pumpFunLink').href = link;
+            document.getElementById('popup').style.display = 'block';
+            document.getElementById('overlay').style.display = 'block';
+        }
+
+        function closePopup() {
+            document.getElementById('popup').style.display = 'none';
+            document.getElementById('overlay').style.display = 'none';
+        }
+
+        // Initial load
+        window.addEventListener('load', () => {
+            displayUserInfo();
+            loadItemDetails();
+        });
+    </script>
+</body>
+</html>

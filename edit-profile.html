@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Profile</title>
+    <style>
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .user-info {
+            display: flex;
+            align-items: center;
+        }
+        .user-info img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Edit Profile</h1>
+        <div class="user-info" id="userInfo">
+            <!-- User info will be dynamically inserted here -->
+        </div>
+    </div>
+    <form id="editProfileForm">
+        <label for="username">Username:</label><br>
+        <input type="text" id="username" name="username" required><br><br>
+        <label for="profilePicture">Profile Picture:</label><br>
+        <input type="file" id="profilePicture" name="profilePicture" accept="image/*"><br><br>
+        <button type="button" onclick="saveProfile()">Save</button>
+        <button type="button" onclick="window.location.href='index.html'">Back</button>
+    </form>
+
+    <script src="https://cdn.jsdelivr.net/npm/@solana/web3.js"></script>
+    <script src="user.js"></script>
+    <script>
+        function saveProfile() {
+            const username = document.getElementById('username').value;
+            const profilePictureInput = document.getElementById('profilePicture');
+            const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+
+            if (profilePictureInput.files && profilePictureInput.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const profilePicture = e.target.result;
+                    currentUser.username = username;
+                    currentUser.profilePicture = profilePicture;
+                    updateUser(currentUser.publicKey, currentUser);
+                    localStorage.setItem('currentUser', JSON.stringify(currentUser));
+                    window.location.href = 'index.html';
+                };
+                reader.readAsDataURL(profilePictureInput.files[0]);
+            } else {
+                currentUser.username = username;
+                updateUser(currentUser.publicKey, currentUser);
+                localStorage.setItem('currentUser', JSON.stringify(currentUser));
+                window.location.href = 'index.html';
+            }
+        }
+
+        // Load user data into form
+        window.addEventListener('load', () => {
+            displayUserInfo();
+            const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+            if (currentUser) {
+                document.getElementById('username').value = currentUser.username;
+            } else {
+                alert('Please connect your wallet first.');
+                window.location.href = 'index.html';
+            }
+        });
+    </script>
+</body>
+</html>
