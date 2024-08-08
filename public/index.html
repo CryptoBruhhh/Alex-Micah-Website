@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Auth</title>
+</head>
+<body>
+    <h1>Welcome to Simple Auth</h1>
+    <div id="user-info">
+        <!-- User info will be injected here -->
+    </div>
+    <a href="/signup.html">Sign Up</a>
+    <a href="/login.html">Login</a>
+    <br>
+    <a href="/">Home</a>
+    <br>
+    <form id="logout-form" action="/auth/logout" method="post" style="display: none;">
+        <button type="submit">Logout</button>
+    </form>
+    <script>
+        // Fetch user info from the server
+        fetch('/user-info')
+            .then(response => response.json())
+            .then(data => {
+                if (data.username) {
+                    document.getElementById('user-info').innerText = `Logged in as: ${data.username}`;
+                    document.getElementById('logout-form').style.display = 'block';
+                } else {
+                    document.getElementById('user-info').innerText = 'Not logged in';
+                }
+            });
+    </script>
+</body>
+</html>
