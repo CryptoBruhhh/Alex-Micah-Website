@@ -12,12 +12,9 @@
     </div>
     <a href="/signup.html">Sign Up</a>
     <a href="/login.html">Login</a>
+    <a href="/users">View All Users</a> <!-- Link to the new page -->
     <br>
     <a href="/">Home</a>
-    <br>
-    <form id="logout-form" action="/auth/logout" method="post" style="display: none;">
-        <button type="submit">Logout</button>
-    </form>
     <script>
         // Fetch user info from the server
         fetch('/user-info')
@@ -25,7 +22,6 @@
             .then(data => {
                 if (data.username) {
                     document.getElementById('user-info').innerText = `Logged in as: ${data.username}`;
-                    document.getElementById('logout-form').style.display = 'block';
                 } else {
                     document.getElementById('user-info').innerText = 'Not logged in';
                 }
