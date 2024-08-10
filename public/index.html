@@ -4,17 +4,86 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Simple Auth</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+
+        header {
+            background-color: #007BFF;
+            color: white;
+            padding: 20px 0;
+            text-align: center;
+            font-size: 2.5em;
+        }
+
+        nav {
+            background-color: #333;
+            overflow: hidden;
+        }
+
+        nav a {
+            float: left;
+            display: block;
+            color: white;
+            text-align: center;
+            padding: 14px 20px;
+            text-decoration: none;
+        }
+
+        nav a:hover {
+            background-color: #575757;
+        }
+
+        .profile {
+            float: right;
+            display: flex;
+            align-items: center;
+            padding: 14px 20px;
+            color: white;
+        }
+
+        .profile img {
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            margin-right: 10px;
+        }
+
+        .content {
+            padding: 20px;
+            text-align: center;
+        }
+
+        #user-info {
+            font-size: 1.2em;
+            margin-top: 20px;
+        }
+    </style>
 </head>
 <body>
-    <h1>Welcome to Simple Auth</h1>
-    <div id="user-info">
-        <!-- User info will be injected here -->
+    <header>
+        Welcome to Simple Auth
+    </header>
+
+    <nav>
+        <a href="/">Home</a>
+        <a href="/signup.html">Sign Up</a>
+        <a href="/login.html">Login</a>
+        <a href="/users">View All Users</a>
+        <div class="profile">
+            <img src="https://via.placeholder.com/40" alt="Profile Icon">
+            <div id="user-info">Not logged in</div>
+        </div>
+    </nav>
+
+    <div class="content">
+        <!-- Additional content can go here -->
     </div>
-    <a href="/signup.html">Sign Up</a>
-    <a href="/login.html">Login</a>
-    <a href="/users">View All Users</a> <!-- Link to the new page -->
-    <br>
-    <a href="/">Home</a>
+
     <script>
         // Fetch user info from the server
         fetch('/user-info')
