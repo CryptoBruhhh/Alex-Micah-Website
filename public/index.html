@@ -149,16 +149,20 @@
                 if (data.username) {
                     authLinks.innerHTML = `
                         <span>Logged in as: ${data.username}</span>
-                        &nbsp;&nbsp;<a href="/auth/logout">[Logout]</a>
+                        &nbsp;&nbsp;<a href="#" onclick="document.getElementById('logout-form').submit();">[Logout]</a>
                     `;
                 } else {
                     authLinks.innerHTML = `
-                        <a href="/signup.html">[Create Account]</a>
-                        &nbsp;&nbsp;<a href="/login.html">[Login]</a>
+                        <a href="/login.html">[Login]</a>
                     `;
                 }
+                authLinks.innerHTML += `
+                    &nbsp;&nbsp;<a href="/signup.html">[Create Account]</a>
+                `;
             });
     </script>
+
+    <form id="logout-form" action="/auth/logout" method="POST" style="display: none;"></form>
     
     <div class="main-content">
         <h1 style="text-align: center; margin-top: 20px;">Moonin'</h1>

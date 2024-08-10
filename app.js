@@ -21,13 +21,11 @@ mongoose.connect(process.env.MONGO_URI, {
       console.error('Failed to connect to MongoDB', err);
   });
 
-  // Add route for logging out. 
+// Add route for logging out
 app.post('/auth/logout', (req, res) => {
     res.clearCookie('token');
     res.redirect('/');
 });
-
-
 
   // Middleware
 app.use(bodyParser.urlencoded({ extended: true }));
