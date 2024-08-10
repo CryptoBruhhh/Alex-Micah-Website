@@ -1,0 +1,120 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: white;
+    color: black;
+}
+
+header {
+    background-color: white;
+    color: black;
+    padding: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo {
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.logo a {
+    text-decoration: none;
+    color: black;
+}
+
+.nav {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+.nav li {
+    display: inline;
+    margin-right: 20px;
+}
+
+.nav li a {
+    text-decoration: none;
+    color: black;
+    font-weight: bold;
+}
+
+.nav li a:hover {
+    text-decoration: underline;
+}
+
+.profile-info {
+    text-align: center;
+    margin: 20px 0;
+}
+
+.profile-info img {
+    border-radius: 50%;
+    width: 80px;
+    height: 80px;
+    margin-bottom: 10px;
+}
+
+.clock-timer, .membership-number, .search-bar {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.search-bar input[type="text"] {
+    width: 200px;
+    padding: 5px;
+}
+
+.search-bar button {
+    padding: 5px 10px;
+    margin-right: 10px;
+}
+
+.listings {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+    padding: 20px;
+}
+
+.listing-item {
+    background-color: white;
+    padding: 10px;
+    text-align: center;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.listing-item img {
+    width: 100%;
+    height: 100px;
+    object-fit: cover;
+    margin-bottom: 10px;
+}
+
+.login-info {
+    display: flex;
+    align-items: center;
+}
+
+.login-info span {
+    font-weight: bold;
+    margin-right: 10px;
+}
+
+.login-info img {
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    margin-left: 10px;
+}
+
+.cyber-font {
+    font-family: "Courier New", Courier, monospace;
+    font-size: 28px;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 20px;
+}
