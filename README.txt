@@ -36,3 +36,17 @@ Docker rm <container name>
 
 Run new docker image:
 docker run -d -p 80:3000 xetters/website-image-test:updated-tag
+
+#Steps for server:
+1. install git
+
+2. clone repo
+
+"https://github.com/xetters/Alex-Micah-Website/tree/Micahs-Version"
+git clone https://github.com/xetters/Alex-Micah-Website.git
+
+3. install docker
+
+4. build docker image
+
+5. run docker image
