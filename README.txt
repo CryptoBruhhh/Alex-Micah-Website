@@ -1,4 +1,4 @@
-URL:
+URL (If run locally)
 http://localhost:3000/
 
 discard all changes b4 commit:
@@ -9,7 +9,6 @@ docker build -t new-image-name:tag .
 docker build -t remote-image:remote-image-tag .
 //rebuild from ubunto
 sudo docker build -t remote-image:remote-image-tag .
-
 
 run docker app (DB and APP)
 docker-compose up
