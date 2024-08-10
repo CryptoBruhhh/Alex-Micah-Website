@@ -1,6 +1,9 @@
 URL:
 http://localhost:3000/
 
+discard all changes b4 commit:
+git reset --hard HEAD
+
 //rebuild (FROM DOCKERFILE)
 docker build -t new-image-name:tag .
 docker build -t remote-image:remote-image-tag .
