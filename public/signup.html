@@ -8,19 +8,38 @@
 <body>
 
     <header>
-        <div class="logo"><a href="/">PRELAUNCH.MEME</a></div>
+        <div class="logo">PRELAUNCH.MEME</div>
+        <nav>
+            <ul class="nav">
+                <li><a href="/users">[Click here for developer info]</a></li>
+            </ul>
+        </nav>
+        <div class="login-info">
+            <span id="auth-links">
+                <a href="/login.html">[Login]</a>
+                &nbsp;&nbsp;<a href="/signup.html">[Create Account]</a>
+                &nbsp;&nbsp;<a href="#" onclick="document.getElementById('logout-form').submit();">[Logout]</a>
+            </span>
+            <img src="https://via.placeholder.com/40" alt="Profile Icon">
+        </div>
     </header>
 
-    <h1>Sign Up</h1>
-    <form action="/auth/signup" method="post">
-        <label for="username">Username:</label>
-        <input type="text" id="username" name="username" required>
+    <form id="logout-form" action="/auth/logout" method="POST" style="display: none;"></form>
+
+    <div class="main-content">
+        <h1>Sign Up</h1>
+        <form action="/auth/signup" method="post">
+            <label for="username">Username:</label>
+            <input type="text" id="username" name="username" required>
+            <br>
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" required>
+            <br>
+            <button type="submit">Sign Up</button>
+        </form>
         <br>
-        <label for="password">Password:</label>
-        <input type="password" id="password" name="password" required>
-        <br>
-        <button type="submit">Sign Up</button>
-    </form>
+        <a href="/">Home</a>
+    </div>
+
 </body>
 </html>
-

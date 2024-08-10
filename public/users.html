@@ -7,8 +7,35 @@
 </head>
 <body>
 
-    <!-- Include the reusable header -->
-    <div id="header-container"></div>
+   
+    <header>
+        <div class="logo">PRELAUNCH.MEME</div>
+        <nav>
+            <ul class="nav">
+                <li><a href="/users">[Click here for developer info]</a></li>
+            </ul>
+        </nav>
+        <div class="login-info">
+            <span id="auth-links">
+                <a href="/login.html">[Login]</a>
+                &nbsp;&nbsp;<a href="/signup.html">[Create Account]</a>
+                &nbsp;&nbsp;<a href="#" onclick="document.getElementById('logout-form').submit();">[Logout]</a>
+            </span>
+            <img src="https://via.placeholder.com/40" alt="Profile Icon">
+        </div>
+    </header>
+
+
+    <form id="logout-form" action="/auth/logout" method="POST" style="display: none;"></form>
+
+    <div class="main-content">
+        <h1>Dev Link (Temporary)</h1>
+        <ul id="user-list">
+            <!-- Usernames will be injected here -->
+        </ul>
+        <br>
+        <a href="/">Home</a>
+    </div>
 
     <h1>All Users</h1>
     <ul>
