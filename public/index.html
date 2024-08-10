@@ -133,13 +133,33 @@
             </ul>
         </nav>
         <div class="login-info">
-            <span><a href="/signup.html">[Create Account]</a></span>
-            <span><a href="/login.html">[Login]</a></span>
+            <span id="auth-links">
+                <!-- Links will be populated based on user login status -->
+            </span>
             <img src="https://via.placeholder.com/40" alt="Profile Icon">
-            <span>&nbsp;&nbsp;<a href="/logout">[Logout]</a></span>
         </div>
     </header>
 
+    <script>
+        // Fetch user info from the server and update the login/logout links
+        fetch('/user-info')
+            .then(response => response.json())
+            .then(data => {
+                const authLinks = document.getElementById('auth-links');
+                if (data.username) {
+                    authLinks.innerHTML = `
+                        <span>Logged in as: ${data.username}</span>
+                        &nbsp;&nbsp;<a href="/auth/logout">[Logout]</a>
+                    `;
+                } else {
+                    authLinks.innerHTML = `
+                        <a href="/signup.html">[Create Account]</a>
+                        &nbsp;&nbsp;<a href="/login.html">[Login]</a>
+                    `;
+                }
+            });
+    </script>
+    
     <div class="main-content">
         <h1 style="text-align: center; margin-top: 20px;">Moonin'</h1>
         
