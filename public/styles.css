@@ -19,6 +19,7 @@ header {
     left: 0;
     position: absolute; /* Ensures the header is attached to the top */
     box-sizing: border-box; /* Ensures padding is included within width calculations */
+    height: 80px; /* Set a fixed height for the header */
 }
 
 .logo {
@@ -71,7 +72,7 @@ header {
 
 .main-content {
     padding: 20px;
-    margin-top: 60px; /* Adds space below the header */
+    margin-top: 80px; /* Adds space below the header */
 }
 
 .profile-info {
@@ -131,7 +132,8 @@ header {
 }
 
 /* Login Page Specific Styles */
-.login-page {
+.login-page,
+.signup-page {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -140,23 +142,27 @@ header {
     background-color: #f3f2ef;
 }
 
-.login-container {
+.login-container,
+.signup-container {
     background-color: white;
     padding: 24px;
     border-radius: 8px;
     box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.15);
     width: 350px;
     text-align: center;
-    margin-top: 80px; /* Adjust to position the container below the header */
+    margin-top: 100px; /* Increased space below the header */
 }
 
-.login-container h2 {
+.login-container h2,
+.signup-container h2 {
     margin-bottom: 16px;
     font-size: 24px;
 }
 
 .login-container input[type="text"],
-.login-container input[type="password"] {
+.login-container input[type="password"],
+.signup-container input[type="text"],
+.signup-container input[type="password"] {
     width: 100%;
     padding: 10px;
     margin: 8px 0;
@@ -166,7 +172,8 @@ header {
     font-size: 16px;
 }
 
-.login-container button {
+.login-container button,
+.signup-container button {
     background-color: #0a66c2;
     color: white;
     padding: 12px;
@@ -178,6 +185,7 @@ header {
     margin-top: 16px;
 }
 
-.login-container button:hover {
+.login-container button:hover,
+.signup-container button:hover {
     background-color: #084a93;
 }
