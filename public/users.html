@@ -6,22 +6,35 @@
     <title>All Users</title>
 </head>
 <body>
+
+    <!-- Include the reusable header -->
+    <div id="header-container"></div>
+
     <h1>All Users</h1>
-    <ul id="user-list">
-        <!-- Users will be injected here by the server -->
+    <ul>
+        <!-- Your user list will be dynamically inserted here -->
     </ul>
-    <a href="/">Home</a>
-</body>
-<script>
-    fetch('/user-data')
-        .then(response => response.json())
-        .then(data => {
-            const userList = document.getElementById('user-list');
-            data.users.forEach(user => {
-                const li = document.createElement('li');
-                li.textContent = `Username: ${user.username}`;
-                userList.appendChild(li);
+
+    <script>
+        // Load the header from header.html
+        fetch('/header.html')
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById('header-container').innerHTML = data;
             });
-        });
-</script>
+
+        // Fetch the user list and insert it into the page
+        fetch('/users')
+            .then(response => response.json())
+            .then(users => {
+                const userList = document.querySelector('ul');
+                users.forEach(user => {
+                    const li = document.createElement('li');
+                    li.textContent = `Username: ${user.username}`;
+                    userList.appendChild(li);
+                });
+            });
+    </script>
+
+</body>
 </html>

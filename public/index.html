@@ -125,45 +125,9 @@
 </head>
 <body>
 
-    <header>
-        <div class="logo">PRELAUNCH.MEME</div>
-        <nav>
-            <ul class="nav">
-                <li><a href="/users">[Click here for developer info]</a></li>
-            </ul>
-        </nav>
-        <div class="login-info">
-            <span id="auth-links">
-                <!-- Links will be populated based on user login status -->
-            </span>
-            <img src="https://via.placeholder.com/40" alt="Profile Icon">
-        </div>
-    </header>
+    <!-- Include the reusable header -->
+    <div id="header-container"></div>
 
-    <script>
-        // Fetch user info from the server and update the login/logout links
-        fetch('/user-info')
-            .then(response => response.json())
-            .then(data => {
-                const authLinks = document.getElementById('auth-links');
-                if (data.username) {
-                    authLinks.innerHTML = `
-                        <span>Logged in as: ${data.username}</span>
-                        &nbsp;&nbsp;<a href="#" onclick="document.getElementById('logout-form').submit();">[Logout]</a>
-                    `;
-                } else {
-                    authLinks.innerHTML = `
-                        <a href="/login.html">[Login]</a>
-                    `;
-                }
-                authLinks.innerHTML += `
-                    &nbsp;&nbsp;<a href="/signup.html">[Create Account]</a>
-                `;
-            });
-    </script>
-
-    <form id="logout-form" action="/auth/logout" method="POST" style="display: none;"></form>
-    
     <div class="main-content">
         <h1 style="text-align: center; margin-top: 20px;">Moonin'</h1>
         
@@ -215,16 +179,13 @@
     </div>
 
     <script>
-        // Fetch user info from the server
-        fetch('/user-info')
-            .then(response => response.json())
+        // Load the header from header.html
+        fetch('/header.html')
+            .then(response => response.text())
             .then(data => {
-                if (data.username) {
-                    document.getElementById('user-info').innerText = `Logged in as: ${data.username}`;
-                } else {
-                    document.getElementById('user-info').innerText = 'Not logged in';
-                }
+                document.getElementById('header-container').innerHTML = data;
             });
     </script>
+
 </body>
 </html>
