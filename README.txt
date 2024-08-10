@@ -3,6 +3,10 @@ http://localhost:3000/
 
 //rebuild (FROM DOCKERFILE)
 docker build -t new-image-name:tag .
+docker build -t remote-image:remote-image-tag .
+//rebuild from ubunto
+sudo docker build -t remote-image:remote-image-tag .
+
 
 run docker app (DB and APP)
 docker-compose up
@@ -45,8 +49,14 @@ docker run -d -p 80:3000 xetters/website-image-test:updated-tag
 "https://github.com/xetters/Alex-Micah-Website/tree/Micahs-Version"
 git clone https://github.com/xetters/Alex-Micah-Website.git
 
-3. install docker
+3. install docker (and maybe python/pip etc)
 
 4. build docker image
 
 5. run docker image
+sudo docker-compose up (compose also needs installation (CORRECT INSTALLATION, VERSION ERRORS CAN HAPPEN))
+
+6. ensure security settings allow port inbound traffic (80http and 3000)
+
+current website:
+http://3.25.127.158:3000/
