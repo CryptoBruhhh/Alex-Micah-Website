@@ -4,45 +4,29 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>All Users</title>
-    <link rel="stylesheet" href="styles.css"> <!-- Link to the external CSS file -->
+    <style>
+        /* Custom styles to ensure no header/nav bar is displayed */
+        header, nav {
+            display: none;
+        }
+    </style>
 </head>
+
 <body>
-
-    <header>
-        <div class="logo"><a href="/">PRELAUNCH.MEME</a></div>
-        <nav>
-        </nav>
-    </header>
-
-    <form id="logout-form" action="/auth/logout" method="POST" style="display: none;"></form>
-
-    <div class="main-content">
-        <h1>Dev Link (Temporary)</h1>
-        <ul id="user-list">
-            <!-- Usernames will be injected here -->
-        </ul>
-        <br>
-        <a href="/">Home</a>
-    </div>
-
-    <h1>All Users</h1>
-    <ul>
-        <!-- Your user list will be dynamically inserted here -->
+    <h1>Dev Link (Temporary)</h1>
+    <ul id="user-list">
+        <!-- Usernames will be injected here -->
     </ul>
 
-    <script>
-        // Load the header from header.html
-        fetch('/header.html')
-            .then(response => response.text())
-            .then(data => {
-                document.getElementById('header-container').innerHTML = data;
-            });
+    <br><br>
+    <a href="/">Back to Home</a>
 
+    <script>
         // Fetch the user list and insert it into the page
         fetch('/users')
             .then(response => response.json())
             .then(users => {
-                const userList = document.querySelector('ul');
+                const userList = document.querySelector('#user-list');
                 users.forEach(user => {
                     const li = document.createElement('li');
                     li.textContent = `Username: ${user.username}`;
@@ -50,6 +34,5 @@
                 });
             });
     </script>
-
 </body>
 </html>

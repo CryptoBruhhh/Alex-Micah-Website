@@ -1,26 +1,4 @@
-/* General Styles */
-body {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 0;
-    background-color: white;
-    color: black;
-}
 
-header {
-    background-color: white;
-    color: black;
-    padding: 10px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    width: 100%;
-    top: 0;
-    left: 0;
-    position: absolute; /* Ensures the header is attached to the top */
-    box-sizing: border-box; /* Ensures padding is included within width calculations */
-    height: 80px; /* Set a fixed height for the header */
-}
 
 .logo {
     font-size: 24px;
@@ -188,4 +166,41 @@ header {
 .login-container button:hover,
 .signup-container button:hover {
     background-color: #084a93;
+}
+
+.dev-link-page {
+    position: relative;
+    min-height: 100vh;
+    margin: 0;
+    padding: 0;
+}
+
+.dev-link-page .main-content {
+    margin-top: 80px; /* Ensures space for the header */
+    padding: 20px;
+    overflow: hidden; /* Prevents any overflow issues */
+}
+
+/* General Styles */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: white;
+    color: black;
+}
+
+header {
+    background-color: white;
+    color: black;
+    padding: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    top: 0;
+    left: 0;
+    position: absolute; /* Ensures the header is attached to the top */
+    box-sizing: border-box; /* Ensures padding is included within width calculations */
+    height: 80px; /* Set a fixed height for the header */
 }
