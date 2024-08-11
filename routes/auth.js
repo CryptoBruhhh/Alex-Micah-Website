@@ -6,13 +6,17 @@ const jwt = require('jsonwebtoken');
 router.post('/signup', async (req, res) => {
     const { username, password } = req.body;
     try {
+        const userExists = await User.findOne({ username });
+        if (userExists) {
+            return res.status(400).json({ error: 'User already exists' });
+        }
         const user = new User({ username, password });
         await user.save();
         const token = jwt.sign({ userId: user._id }, 'your_jwt_secret');
         res.cookie('token', token, { httpOnly: true });
-        res.redirect('/');
+        res.status(201).json({ message: 'User created successfully' });
     } catch (error) {
-        res.status(400).send({ error: 'User already exists' });
+        res.status(500).json({ error: 'Internal server error' });
     }
 });
 
