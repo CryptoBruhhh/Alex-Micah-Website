@@ -8,6 +8,7 @@ const cookieParser = require('cookie-parser');
 const jwt = require('jsonwebtoken');
 const User = require('./models/User');
 const app = express();
+const itemRoutes = require('./routes/items');
 
 // Connect to MongoDB
 mongoose.connect(process.env.MONGO_URI, {
@@ -31,6 +32,7 @@ app.post('/auth/logout', (req, res) => {
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+app.use('/items', itemRoutes);
 
 // Routes
 
