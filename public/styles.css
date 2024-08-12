@@ -252,9 +252,12 @@ button[type="submit"] {
     border: none;
     border-radius: 4px;
     cursor: pointer;
-    float: right;
+    display: block; /* Change to block to take full width */
+    width: 50%; /* Adjust width as per your design requirement */
+    margin: 20px auto; /* Center the button horizontally */
+    text-align: center; /* Ensure the text inside the button is centered */
 }
 
 button[type="submit"]:hover {
-    background-color: #45a049;
+    background-color: #80b983;
 }
