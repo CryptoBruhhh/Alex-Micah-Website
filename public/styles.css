@@ -49,8 +49,7 @@
 }
 
 .main-content {
-    padding: 20px;
-    margin-top: 80px; /* Adds space below the header */
+    padding: 20px; /* Adds space below the header */
 }
 
 .profile-info {
@@ -186,6 +185,7 @@ body {
     font-family: Arial, sans-serif;
     margin: 0;
     padding: 0;
+    padding-top: 80px;
     background-color: white;
     color: black;
 }
@@ -209,10 +209,11 @@ header {
 .create-prelaunch-container {
     width: 80%;
     max-width: 960px;
-    margin: 20px auto;
+    margin: 60px auto 20px; /* Adjust the top margin to push it down */
     padding: 20px;
     border: 2px solid #000;
     box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    background: #fff; /* Ensure background contrasts with potentially overlapping header */
 }
 
 .create-prelaunch-container h1 {
