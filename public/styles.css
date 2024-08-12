@@ -101,11 +101,24 @@
 }
 
 .cyber-font {
-    font-family: "Courier New", Courier, monospace;
-    font-size: 28px;
-    font-weight: bold;
-    text-align: center;
-    margin-bottom: 20px;
+    font-family: "Courier New", Courier, monospace; /* Ensures the font is monospaced */
+    font-size: 28px; /* Sets the size of the font */
+    font-weight: bold; /* Makes the font bold */
+    text-align: center; /* Centers text within the element */
+    margin-bottom: 20px; /* Provides spacing below the element */
+    width: 100%; /* Ensures the div takes full width to center content correctly */
+}
+
+.cyber-font a {
+    color: black; /* Default color, set to match your normal text */
+    text-decoration: none; /* Removes the underline */
+    transition: color 0.3s ease-in-out; /* Smooth transition for color change */
+    cursor: pointer; /* Shows a pointer cursor on hover to indicate it's clickable */
+    display: inline-block; /* Ensures the link can be centered as text */
+}
+
+.cyber-font a:hover {
+    color: gray; /* Lighter color when hovered, adjust as needed */
 }
 
 /* Login Page Specific Styles */
