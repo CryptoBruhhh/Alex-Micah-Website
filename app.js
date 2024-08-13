@@ -7,8 +7,11 @@ const authRoutes = require('./routes/auth');
 const cookieParser = require('cookie-parser');
 const jwt = require('jsonwebtoken');
 const User = require('./models/User');
+const Item = require('./models/Item'); // Import item model
 const app = express();
-const itemRoutes = require('./routes/items');
+const multer = require('multer');
+const itemRoutes = require('./routes/itemRoutes'); // Adjust the path as necessary
+const upload = multer({ dest: 'uploads/' }); // Adjust storage settings as needed
 
 // Connect to MongoDB
 mongoose.connect(process.env.MONGO_URI, {
@@ -96,3 +99,4 @@ app.get('/users', async (req, res) => {
         res.status(500).send('Error fetching users');
     }
 });
+
