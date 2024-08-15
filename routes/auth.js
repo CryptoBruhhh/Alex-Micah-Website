@@ -9,16 +9,16 @@ const mongoose = require('mongoose');
 const isAuthenticated = (req, res, next) => {
     const token = req.cookies.token;
     if (!token) {
-        return res.status(401).send({ error: 'You must be logged in to perform this action.' });
+        return res.status(401).json({ error: 'You must be logged in to perform this action.' });
     }
     try {
-        const decoded = jwt.verify(token, 'your_jwt_secret');
-        req.user = decoded.userId;
+        jwt.verify(token, 'your_jwt_secret');
         next();
     } catch (error) {
-        return res.status(401).send({ error: 'Invalid token' });
+        return res.status(401).json({ error: 'Invalid token' });
     }
 };
+
 
 
 // Add route for signing up

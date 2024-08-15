@@ -39,11 +39,13 @@ router.post('/', isAuthenticated, upload.fields([
     { name: 'banner', maxCount: 1 },
     { name: 'artwork', maxCount: 5 }
 ]), async (req, res) => {
-    const { name, description, countdown } = req.body;
-    const ticker = generateTicker(name);
-    const endTime = new Date(Date.now() + countdown * 3600000); // countdown hours to milliseconds
-
+    console.log(req.body); // Log the received form data
+    console.log(req.files); // Log file data
     try {
+        const { name, description, countdown } = req.body;
+        const ticker = generateTicker(name);
+        const endTime = new Date(Date.now() + countdown * 3600000);
+
         const newItem = new Item({
             name,
             description,
@@ -54,12 +56,13 @@ router.post('/', isAuthenticated, upload.fields([
             endTime
         });
         await newItem.save();
-        res.redirect('/');
+        res.status(201).json({ message: 'Prelaunch posted successfully!' });
     } catch (error) {
         console.error('Failed to create item:', error);
-        res.status(500).send('Failed to create item');
+        res.status(500).json({ error: 'Failed to create item' });
     }
 });
+
 
 function generateTicker(name) {
     // Simple example: first three letters of name + random hex string

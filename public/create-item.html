@@ -15,7 +15,7 @@
 
 <div class="create-prelaunch-container">
     <h1 style="font-family: 'Cyber', sans-serif;">Create a Prelaunch</h1>
-    <form action="/items" method="POST" enctype="multipart/form-data">
+    <form id="createItemForm" enctype="multipart/form-data">
         <div class="form-group">
             <label for="name">Name:</label>
             <input type="text" id="name" name="name" required>
@@ -26,15 +26,8 @@
             <textarea id="description" name="description" required></textarea>
         </div>
 
-        <!--  IDK IF WE NEED THIS
         <div class="form-group">
-            <label for="ticker">Ticker:</label>
-            <input type="text" id="ticker" name="ticker">
-        </div>
-        -->
-
-        <div class="form-group">
-            <label for="image">Icon:</label>
+            <label for="icon">Icon:</label>
             <input type="file" id="icon" name="icon" required>
         </div>
 
@@ -55,7 +48,40 @@
 
         <button type="submit">Post Prelaunch</button>
     </form>
+    <div id="message"></div>
 </div>
+
+<script>
+document.getElementById('createItemForm').addEventListener('submit', function(event) {
+    event.preventDefault(); // Prevent the default form submission
+
+    const formData = new FormData(document.getElementById('createItemForm'));
+    fetch('/items', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        const messageElement = document.getElementById('message');
+        if (data.error) {
+            messageElement.textContent = data.error; // Display error message
+            messageElement.style.color = 'red';
+        } else {
+            messageElement.textContent = 'Prelaunch posted successfully!';
+            messageElement.style.color = 'green';
+            // Optionally reset the form or handle the success case
+        }
+    })
+    .catch(error => {
+    console.error('Error:', error);
+    return error.response.json(); // Assuming server sends JSON response
+    })
+    .then(errorData => {
+        document.getElementById('message').textContent = 'Failed to submit prelaunch: ' + (errorData.error || 'Unknown error');
+    });
+
+});
+</script>
 
 </body>
 </html>
