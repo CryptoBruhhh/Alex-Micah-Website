@@ -74,4 +74,19 @@ router.get('/', async (req, res) => {
     }
 });
 
+// GET route for a specific item by ticker
+router.get('/:ticker', async (req, res) => {
+    try {
+        const item = await Item.findOne({ ticker: req.params.ticker });
+        if (!item) {
+            return res.status(404).send('Item not found');
+        }
+        res.status(200).json(item);
+    } catch (error) {
+        console.error('Error fetching item:', error);
+        res.status(500).send('Server error');
+    }
+});
+
+
 module.exports = router;

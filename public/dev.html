@@ -35,8 +35,6 @@
     <h2>Coins:</h2>
     <div id="item-list" class="item-grid"></div>
     
-
-
     <a href="/">Back to Home</a>
 
     <script>
@@ -51,19 +49,20 @@
                     userList.appendChild(li);
                 });
             });
-
+    
         // Fetch the item list and insert it into the page
-        // Example of fetching and displaying items dynamically
-        fetch('/items')
+        fetch('/items')  // This line initiates fetching item data from your server
             .then(response => response.json())
-            .then(items => {
+            .then(items => {  // This callback processes the items after they are fetched
                 const itemList = document.querySelector('#item-list');
                 items.forEach(item => {
                     const div = document.createElement('div');
                     div.className = 'item-box';
                     div.innerHTML = `
-                        <img src="${item.icon}" alt="Icon of ${item.name}">
-                        <h3>${item.name}</h3>
+                        <a href="/items/${item.ticker}"> <!-- Link to the item's detailed page -->
+                            <img src="${item.icon}" alt="Icon of ${item.name}">
+                            <h3>${item.name}</h3>
+                        </a>
                         <p>${item.description}</p>
                         ${item.artwork.map(url => `<img src="${url}" alt="Artwork of ${item.name}">`).join('')}
                         <p>Ticker: ${item.ticker || 'N/A'}</p>
@@ -71,8 +70,10 @@
                     `;
                     itemList.appendChild(div);
                 });
-            });
-        
+            })
+            .catch(error => console.error('Error loading items:', error));  // This will log errors to the console if the fetch fails
     </script>
+    
+
 </body>
 </html>
