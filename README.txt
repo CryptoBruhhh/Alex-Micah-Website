@@ -14,7 +14,7 @@ REBUILD BEFORE RUNNING AGAIN WITH CHANGES:
 docker-compose up --build
 
 enter docker container:
-docker exec -it mongodb bash
+docker exec -it mongodb/my-app bash
 
 How to SSH to EC2 Server on AWS (LOGIN)
 ssh -i "C:\Users\xettm\Desktop\websitefolderstuff\Keypairtest1.pem" ubuntu@ec2-3-25-127-158.ap-southeast-2.compute.amazonaws.com

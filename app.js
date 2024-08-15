@@ -1,76 +1,80 @@
-//importing dependencies and modules
+// Importing dependencies and modules
 const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const path = require('path');
-const authRoutes = require('./routes/auth');
 const cookieParser = require('cookie-parser');
 const jwt = require('jsonwebtoken');
 const User = require('./models/User');
 const Item = require('./models/Item'); // Import item model
-const app = express();
 const multer = require('multer');
+const authRoutes = require('./routes/auth');
 const itemRoutes = require('./routes/itemRoutes'); // Adjust the path as necessary
 const upload = multer({ dest: 'uploads/' }); // Adjust storage settings as needed
+
+const app = express();
 
 // Connect to MongoDB
 mongoose.connect(process.env.MONGO_URI, {
     useNewUrlParser: true,
     useUnifiedTopology: true
 })
-  .then(() => {
-      console.log('Connected to MongoDB');
-  })
-  .catch(err => {
-      console.error('Failed to connect to MongoDB', err);
-  });
+.then(() => {
+    console.log('Connected to MongoDB');
+})
+.catch(err => {
+    console.error('Failed to connect to MongoDB', err);
+});
 
-
-
-// Middleware
+// Middleware to parse body data
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(express.json());
+
+// Middleware for handling cookies
 app.use(cookieParser());
-// Add middleware to serve static files
+
+// Middleware to serve static files from 'public' directory
 app.use(express.static(path.join(__dirname, 'public')));
-//// Middleware to log the full path of static file requests
+
+// Middleware to log requests
+app.use((req, res, next) => {
+    console.log(`${req.method} ${req.url}`);
+    next();
+});
+
+// Middleware to serve and log file access from 'uploads'
 app.use('/uploads', (req, res, next) => {
     const fullPath = path.join(__dirname, 'uploads', req.url);
     console.log(`Attempting to serve file from: ${fullPath}`);
     next();
 }, express.static(path.join(__dirname, 'uploads')));
-// Add middleware to handle errors
+
+// Middleware to handle errors
 app.use((err, req, res, next) => {
     console.error(err.stack);
     res.status(500).send('Something broke!');
 });
-// Add middleware to log requests
-app.use((req, res, next) => {
-    console.log(`${req.method} ${req.url}`);
-    next();
-});
-// Add middleware to parse JSON request bodies
-app.use(express.json());
 
 // Routes
-// Add route for logging out
+
+// Authentication routes
+app.use('/auth', authRoutes);
+
+// Item routes
+app.use('/items', itemRoutes);
+
+// Route for logging out
 app.post('/auth/logout', (req, res) => {
     res.clearCookie('token');
     res.redirect('/');
 });
 
-// Add routes for items
-app.use('/items', itemRoutes);
-
-
-// Add routes for authentication
-app.use('/auth', authRoutes);
-
-// Add route for home page
+// Route for the home page
 app.get('/', async (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
-// Add route for user info
+// Route to fetch user info
 app.get('/user-info', async (req, res) => {
     if (!req.cookies.token) {
         return res.json({ username: null });
@@ -91,7 +95,7 @@ app.get('/users', async (req, res) => {
         res.status(200).json(users);  // Sending JSON response with user data
     } catch (err) {
         console.error('Failed to fetch users:', err);
-        res.status(500).send('Failed to fetch users');
+        res.status(500). send('Failed to fetch users');
     }
 });
 
@@ -99,6 +103,3 @@ app.get('/users', async (req, res) => {
 app.listen(3000, () => {
     console.log('Server is running on port 3000');
 });
-
-
-

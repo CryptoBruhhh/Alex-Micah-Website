@@ -2,19 +2,35 @@ const express = require('express');
 const router = express.Router();
 const multer = require('multer');
 const Item = require('../models/Item');
-const mongoose = require('mongoose');
-const crypto = require('crypto');  // Import the crypto module
+const crypto = require('crypto'); // Import the crypto module
 
 // Configure multer for file uploads
 const storage = multer.diskStorage({
     destination: function(req, file, cb) {
-        cb(null, './uploads'); // Make sure this directory exists or multer will throw an error
+        cb(null, './uploads'); // Ensure this directory exists or multer will throw an error
     },
+    // Add a timestamp to the file name
     filename: function(req, file, cb) {
         cb(null, file.fieldname + '-' + Date.now() + '-' + file.originalname);
     }
 });
-const upload = multer({ storage: storage });
+
+// File filter to ensure only images are uploaded
+const fileFilter = (req, file, cb) => {
+    if (file.mimetype.startsWith('image/')) {
+        cb(null, true);
+    } else {
+        cb(new Error('Not an image! Please upload only images.'), false);
+    }
+};
+
+const upload = multer({ 
+    storage: storage,
+    fileFilter: fileFilter,
+    limits: {
+        fileSize: 1024 * 1024 * 5 // 5MB max file size
+    }
+});
 
 // POST route for creating an item
 router.post('/', upload.fields([
@@ -23,7 +39,7 @@ router.post('/', upload.fields([
     { name: 'artwork', maxCount: 5 }
 ]), async (req, res) => {
     const { name, description, countdown } = req.body;
-    const ticker = generateTicker(name); // Function to generate ticker
+    const ticker = generateTicker(name);
 
     try {
         const newItem = new Item({
@@ -52,7 +68,7 @@ function generateTicker(name) {
 router.get('/', async (req, res) => {
     try {
         const items = await Item.find();
-        res.status(200).send(items);
+        res.status(200).json(items);
     } catch (error) {
         res.status(500).send(error.message);
     }
