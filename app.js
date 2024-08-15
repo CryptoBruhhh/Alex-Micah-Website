@@ -34,12 +34,29 @@ app.post('/auth/logout', (req, res) => {
 });
 
   // Middleware
+  
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
+
+// Add middleware to serve static files
 app.use(express.static(path.join(__dirname, 'public')));
+
+
+//// Middleware to log the full path of static file requests
+app.use('/uploads', (req, res, next) => {
+    const fullPath = path.join(__dirname, 'uploads', req.url);
+    console.log(`Attempting to serve file from: ${fullPath}`);
+    next();
+}, express.static(path.join(__dirname, 'uploads')));
+
+// Add routes for items
 app.use('/items', itemRoutes);
+// Add middleware to parse JSON request bodies
 app.use(express.json());
 
+
+
+// Add middleware to handle errors
 app.use((err, req, res, next) => {
     console.error(err.stack);
     res.status(500).send('Something broke!');

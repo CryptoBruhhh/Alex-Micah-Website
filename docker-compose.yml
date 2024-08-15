@@ -19,6 +19,8 @@ services:
       - MONGO_URI=mongodb://mongo:27017/simple-auth
     depends_on:
       - mongo
+    volumes:
+      - ./uploads:/app/uploads  # Add this line to persist uploaded files
 
 volumes:
   mongo-data:

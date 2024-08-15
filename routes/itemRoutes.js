@@ -18,7 +18,6 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage });
 
 // POST route for creating an item
-// POST route for creating an item
 router.post('/', upload.fields([
     { name: 'icon', maxCount: 1 },
     { name: 'banner', maxCount: 1 },

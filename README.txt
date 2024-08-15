@@ -6,18 +6,15 @@ git reset --hard HEAD
 
 //rebuild (FROM DOCKERFILE)
 docker build -t new-image-name:tag .
-docker build -t remote-image:remote-image-tag .
+
 //rebuild from ubunto
 sudo docker build -t remote-image:remote-image-tag .
-
-run docker app (DB and APP)
-docker-compose up
 
 REBUILD BEFORE RUNNING AGAIN WITH CHANGES:
 docker-compose up --build
 
-close dowcker app 
-docker-compose down
+enter docker container:
+docker exec -it mongodb bash
 
 How to SSH to EC2 Server on AWS (LOGIN)
 ssh -i "C:\Users\xettm\Desktop\websitefolderstuff\Keypairtest1.pem" ubuntu@ec2-3-25-127-158.ap-southeast-2.compute.amazonaws.com
@@ -25,7 +22,6 @@ ssh -i "C:\Users\xettm\Desktop\websitefolderstuff\Keypairtest1.pem" ubuntu@ec2-3
 COPY IMAGE
 (scp -i <path to key> <path to image.tar> <user@aws.com>)
 scp -i C:\Users\xettm\Desktop\websitefolderstuff\Keypairtest1.pem C:\Users\xettm\Desktop\Website\website-image-test.tar ubuntu@ec2-52-65-116-190.ap-southeast-2.compute.amazonaws.com
-
 
 RANDOM NOTES FOR UPDATING AWS:
 
