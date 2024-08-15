@@ -99,6 +99,12 @@ app.get('/users', async (req, res) => {
     }
 });
 
+// Route to serve the item details page
+app.get('/item-detail', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'item-details.html'));
+});
+
+
 // Start the server
 app.listen(3000, () => {
     console.log('Server is running on port 3000');

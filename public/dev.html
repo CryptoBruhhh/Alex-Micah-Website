@@ -38,7 +38,6 @@
     <a href="/">Back to Home</a>
 
     <script>
-        // Fetch the user list and insert it into the page
         fetch('/users')
             .then(response => response.json())
             .then(users => {
@@ -50,28 +49,45 @@
                 });
             });
     
-        // Fetch the item list and insert it into the page
-        fetch('/items')  // This line initiates fetching item data from your server
-            .then(response => response.json())
-            .then(items => {  // This callback processes the items after they are fetched
-                const itemList = document.querySelector('#item-list');
-                items.forEach(item => {
-                    const div = document.createElement('div');
-                    div.className = 'item-box';
-                    div.innerHTML = `
-                        <a href="/items/${item.ticker}"> <!-- Link to the item's detailed page -->
-                            <img src="${item.icon}" alt="Icon of ${item.name}">
-                            <h3>${item.name}</h3>
-                        </a>
-                        <p>${item.description}</p>
-                        ${item.artwork.map(url => `<img src="${url}" alt="Artwork of ${item.name}">`).join('')}
-                        <p>Ticker: ${item.ticker || 'N/A'}</p>
-                        <p>Countdown: ${item.countdown} hours</p>
-                    `;
-                    itemList.appendChild(div);
-                });
-            })
-            .catch(error => console.error('Error loading items:', error));  // This will log errors to the console if the fetch fails
+            fetch('/items')
+        .then(response => response.json())
+        .then(items => {
+            const itemList = document.querySelector('#item-list');
+            const serverBaseURL = 'http://localhost:3000/';  // Adjust based on your actual server URL
+            items.forEach(item => {
+                const div = document.createElement('div');
+                div.className = 'item-box';
+                const itemPageUrl = `${serverBaseURL}item-detail?ticker=${item.ticker}`;  // Full link to the detail page
+
+                div.innerHTML = `
+                    <a href="${itemPageUrl}">
+                        <img src="${serverBaseURL + item.icon}" alt="Icon of ${item.name}" style="cursor:pointer;">
+                    </a>
+                    <a href="${itemPageUrl}" style="text-decoration:none; color:inherit;">
+                        <h3>${item.name}</h3>
+                    </a>
+                    <p>${item.description}</p>
+                    <p>Ticker: ${item.ticker}</p>
+                    <p>Countdown: ${item.countdown} hours</p>
+                    <a href="${itemPageUrl}">View Details</a>
+                    <div class="url-display">
+                        <label>Item URL:</label>
+                        <input type="text" value="${itemPageUrl}" readonly onclick="this.select();">
+                    </div>
+                `;
+                itemList.appendChild(div);
+            });
+        })
+        .catch(error => console.error('Error loading items:', error));
+    
+        function copyToClipboard(elementId) {
+            var copyText = document.getElementById(elementId);
+            copyText.select();
+            copyText.setSelectionRange(0, 99999); /* For mobile devices */
+            navigator.clipboard.writeText(copyText.value).then(() => {
+                alert('Copied to clipboard!');
+            });
+        }
     </script>
     
 

@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Item Details</title>
+    <link rel="stylesheet" href="styles.css"> <!-- Link to your common CSS file -->
+</head>
+<body>
+    <header>
+        <div class="logo"><a href="/">PRELAUNCH.MEME</a></div>
+    </header>
+
+    <div class="item-details-container">
+        <div id="item-banner" class="item-banner">
+            <!-- Banner image will go here, styled in CSS -->
+        </div>
+        <div class="item-content">
+            <h1 id="item-name"></h1>
+            <img id="item-icon" src="" alt="Item Icon">
+            <p id="item-description"></p>
+            <div id="item-artwork"></div>
+            <p id="item-ticker"></p>
+            <p id="item-countdown"></p>
+        </div>
+    </div>
+
+    <script>
+        // Extract the ticker from the URL
+        const params = new URLSearchParams(window.location.search);
+        const ticker = params.get('ticker');
+
+        // Fetch item details from the server
+        fetch(`/items/${ticker}`)
+            .then(response => response.json())
+            .then(item => {
+                document.getElementById('item-name').textContent = item.name;
+                document.getElementById('item-icon').src = `http://localhost:3000/${item.icon}`;
+                document.getElementById('item-description').textContent = item.description;
+                document.getElementById('item-ticker').textContent = `Ticker: ${item.ticker}`;
+                document.getElementById('item-countdown').textContent = `Countdown: ${item.countdown} hours`;
+
+                // Set banner image
+                const bannerDiv = document.getElementById('item-banner');
+                bannerDiv.style.backgroundImage = `url(http://localhost:3000/${item.banner})`;
+                bannerDiv.style.height = '200px'; // Adjust height as necessary
+                bannerDiv.style.width = '100%';
+                bannerDiv.style.backgroundSize = 'cover';
+
+                // Display artwork images
+                const artworkContainer = document.getElementById('item-artwork');
+                item.artwork.forEach(art => {
+                    const img = document.createElement('img');
+                    img.src = `http://localhost:3000/${art}`;
+                    img.alt = 'Item Artwork';
+                    img.style.width = '100px'; // Adjust size as necessary
+                    img.style.margin = '5px';
+                    artworkContainer.appendChild(img);
+                });
+            })
+            .catch(error => console.error('Failed to load item details:', error));
+    </script>
+</body>
+</html>
