@@ -13,6 +13,8 @@ const multer = require('multer');
 const itemRoutes = require('./routes/itemRoutes'); // Adjust the path as necessary
 const upload = multer({ dest: 'uploads/' }); // Adjust storage settings as needed
 
+console.log("Mongo URI: ", process.env.MONGO_URI);
+
 // Connect to MongoDB
 mongoose.connect(process.env.MONGO_URI, {
     useNewUrlParser: true,

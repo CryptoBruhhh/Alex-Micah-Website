@@ -2,6 +2,8 @@ const express = require('express');
 const router = express.Router();
 const multer = require('multer');
 const Item = require('../models/Item');
+const mongoose = require('mongoose');
+
 
 // Configure multer for file uploads
 const storage = multer.diskStorage({
@@ -15,6 +17,7 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage: storage });
 
+// POST route for creating an item
 // POST route for creating an item
 router.post('/', upload.fields([
     { name: 'icon', maxCount: 1 },
@@ -33,6 +36,12 @@ router.post('/', upload.fields([
             countdown
         });
         await newItem.save();
+
+        // Log the database name and collection name
+        console.log('Item saved in database:', mongoose.connection.name);
+        console.log('Collection name:', newItem.collection.collectionName);
+        console.log('Saved item:', newItem);
+
         res.status(201).send('Item created successfully');
     } catch (error) {
         res.status(500).send(error.message);
