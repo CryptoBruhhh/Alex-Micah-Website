@@ -6,7 +6,7 @@ const Item = require('../models/Item');
 // Configure multer for file uploads
 const storage = multer.diskStorage({
     destination: function(req, file, cb) {
-        cb(null, './uploads');
+        cb(null, './uploads'); // Make sure this directory exists or multer will throw an error
     },
     filename: function(req, file, cb) {
         cb(null, file.fieldname + '-' + Date.now() + '-' + file.originalname);
@@ -14,7 +14,6 @@ const storage = multer.diskStorage({
 });
 
 const upload = multer({ storage: storage });
-
 
 // POST route for creating an item
 router.post('/', upload.fields([
@@ -39,5 +38,17 @@ router.post('/', upload.fields([
         res.status(500).send(error.message);
     }
 });
+
+// GET route to fetch all items
+router.get('/', async (req, res) => {
+    try {
+        const items = await Item.find();
+        res.status(200).send(items);
+    } catch (error) {
+        res.status(500).send(error.message);
+    }
+});
+
+
 
 module.exports = router;

@@ -3,26 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>All Users</title>
-    <style>
-        /* Minimal reset to remove default browser styles */
-        body, h1, ul, li, a {
-            margin: 0;
-            padding: 0;
-            font-family: sans-serif;
-            list-style: none;
-            text-decoration: none;
-        }
-    </style>
+    <title>All Users and Items</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
-
 <body>
-    <h1>Dev Link (Temporary)</h1>
-    <ul id="user-list">
-        <!-- Usernames will be injected here -->
-    </ul>
+    <h1>Dev Link</h1>
+    <h2>Users</h2>
+    <ul id="user-list"></ul>
+    <h2>Items</h2>
+    <ul id="item-list"></ul>
+    
+    <!-- Display the username -->
+    <div id="username">Loading user info...</div>
 
-    <br><br>
     <a href="/">Back to Home</a>
 
     <script>
@@ -37,6 +30,35 @@
                     userList.appendChild(li);
                 });
             });
+
+        // Fetch the item list and insert it into the page
+        fetch('/items')
+            .then(response => response.json())
+            .then(items => {
+                const itemList = document.querySelector('#item-list');
+                items.forEach(item => {
+                    const li = document.createElement('li');
+                    li.innerHTML = `Item Name: ${item.name}, Description: ${item.description}`;
+                    itemList.appendChild(li);
+                });
+            });
+    </script>
+
+    <!-- Testing fetching user info -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            fetch('/user-info')
+                .then(response => response.json())
+                .then(data => {
+                    const usernameElement = document.getElementById('username');
+                    usernameElement.textContent = data.username ? `Username: ${data.username}` : 'Not logged in';
+                })
+                .catch(error => {
+                    console.error('Error fetching user info:', error);
+                    const usernameElement = document.getElementById('username');
+                    usernameElement.textContent = 'Error loading user information';
+                });
+        });
     </script>
 </body>
 </html>
