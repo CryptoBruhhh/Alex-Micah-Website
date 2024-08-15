@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Account</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <div class="logo"><a href="/">PRELAUNCH.MEME</a></div>
+        <nav>
+            <ul class="nav">
+                <li><a href="dev.html">[Admin/Dev Tools]</a></li>
+                <li><a href="/account.html">[Account]</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <div class="profile-info">
+        <h1>My Account</h1>
+        <div>
+            <img id="userPhoto" src="https://via.placeholder.com/150" alt="Profile Picture" />
+            <p id="username">Username: Loading...</p>
+        </div>
+    </div>
+
+    <script>
+        fetch('/user-info')
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Failed to fetch user data');
+            }
+            return response.json();
+        })
+        .then(data => {
+            document.getElementById('userPhoto').src = data.photoUrl || 'https://via.placeholder.com/150'; // Use a default or provided photo URL
+            document.getElementById('username').textContent = 'Username: ' + data.username;
+        })
+        .catch(error => {
+            document.getElementById('username').textContent = 'Failed to load user data';
+            console.error('Error:', error);
+        });
+    </script>
+</body>
+</html>

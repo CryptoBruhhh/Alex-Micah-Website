@@ -10,13 +10,16 @@
         $(document).ready(function(){
             $('form').submit(function(event){
                 event.preventDefault();
+                
+                // Create a FormData object to handle file upload
+                var formData = new FormData(this);
+
                 $.ajax({
                     type: 'POST',
                     url: '/auth/signup',
-                    data: {
-                        username: $('#username').val(),
-                        password: $('#password').val()
-                    },
+                    data: formData,
+                    processData: false,  // Tell jQuery not to process the data
+                    contentType: false,  // Tell jQuery not to set contentType
                     success: function(data){
                         window.location.href = '/';
                     },
@@ -34,9 +37,10 @@
     </header>
     <div class="signup-container">
         <h2>Create Account</h2>
-        <form>
+        <form enctype="multipart/form-data">
             <input type="text" id="username" name="username" placeholder="Username" required>
             <input type="password" id="password" name="password" placeholder="Password" required>
+            <input type="file" id="profilePic" name="profilePic" accept="image/*"> <!-- Profile picture input -->
             <button type="submit">Sign Up</button>
         </form>
         <p class="error-message" style="color: red;"></p>

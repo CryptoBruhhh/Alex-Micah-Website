@@ -10,6 +10,10 @@ const UserSchema = new mongoose.Schema({
     password: {
         type: String,
         required: true
+    },
+    photoUrl: {
+        type: String,
+        default: '' // or you can link to a default image if you prefer
     }
 });
 

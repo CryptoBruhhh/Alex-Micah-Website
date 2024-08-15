@@ -72,16 +72,20 @@ app.get('/', async (req, res) => {
 });
 
 // Route to fetch user info
+// Route to fetch user info
 app.get('/user-info', async (req, res) => {
     if (!req.cookies.token) {
-        return res.json({ username: null });
+        return res.status(401).json({ error: 'No token provided, authentication failed.' });
     }
     try {
         const decoded = jwt.verify(req.cookies.token, 'your_jwt_secret');
-        const user = await User.findById(decoded.userId);
-        res.json({ username: user.username });
+        const user = await User.findById(decoded.userId).select('username photoUrl');
+        if (!user) {
+            return res.status(404).json({ error: 'User not found' });
+        }
+        res.json({ username: user.username, photoUrl: user.photoUrl });
     } catch (err) {
-        res.json({ username: null });
+        res.status(500).json({ error: 'Failed to authenticate token.' });
     }
 });
 

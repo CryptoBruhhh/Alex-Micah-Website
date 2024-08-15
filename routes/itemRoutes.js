@@ -1,22 +1,30 @@
 const express = require('express');
 const router = express.Router();
 const multer = require('multer');
+const crypto = require('crypto');
 const Item = require('../models/Item');
-const crypto = require('crypto'); // Import the crypto module
+// itemRoutes.js
 const { isAuthenticated } = require('./auth');
+
+
+// Ensure the 'uploads' directory exists
+const fs = require('fs');
+const path = require('path');
+const uploadDir = path.join(__dirname, '..', 'uploads');
+if (!fs.existsSync(uploadDir)) {
+    fs.mkdirSync(uploadDir, { recursive: true });
+}
 
 // Configure multer for file uploads
 const storage = multer.diskStorage({
     destination: function(req, file, cb) {
-        cb(null, './uploads'); // Ensure this directory exists or multer will throw an error
+        cb(null, uploadDir);  // Use the checked and created uploads directory
     },
-    // Add a timestamp to the file name
     filename: function(req, file, cb) {
         cb(null, file.fieldname + '-' + Date.now() + '-' + file.originalname);
     }
 });
 
-// File filter to ensure only images are uploaded
 const fileFilter = (req, file, cb) => {
     if (file.mimetype.startsWith('image/')) {
         cb(null, true);
@@ -25,13 +33,18 @@ const fileFilter = (req, file, cb) => {
     }
 };
 
-const upload = multer({ 
+const upload = multer({
     storage: storage,
     fileFilter: fileFilter,
     limits: {
-        fileSize: 1024 * 1024 * 5 // 5MB max file size
+        fileSize: 1024 * 1024 * 5  // 5MB max file size
     }
 });
+
+// Function to generate a ticker for an item
+function generateTicker(name) {
+    return name.substring(0, 3).toUpperCase() + '-' + crypto.randomBytes(3).toString('hex').toUpperCase();
+}
 
 // POST route for creating an item
 router.post('/', isAuthenticated, upload.fields([
@@ -39,8 +52,6 @@ router.post('/', isAuthenticated, upload.fields([
     { name: 'banner', maxCount: 1 },
     { name: 'artwork', maxCount: 5 }
 ]), async (req, res) => {
-    console.log(req.body); // Log the received form data
-    console.log(req.files); // Log file data
     try {
         const { name, description, countdown } = req.body;
         const ticker = generateTicker(name);
@@ -62,12 +73,6 @@ router.post('/', isAuthenticated, upload.fields([
         res.status(500).json({ error: 'Failed to create item' });
     }
 });
-
-
-function generateTicker(name) {
-    // Simple example: first three letters of name + random hex string
-    return name.substring(0, 3).toUpperCase() + '-' + crypto.randomBytes(3).toString('hex').toUpperCase();
-}
 
 // GET route to fetch all items
 router.get('/', async (req, res) => {
