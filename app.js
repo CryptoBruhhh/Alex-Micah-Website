@@ -72,22 +72,23 @@ app.get('/', async (req, res) => {
 });
 
 // Route to fetch user info
-// Route to fetch user info
 app.get('/user-info', async (req, res) => {
     if (!req.cookies.token) {
-        return res.status(401).json({ error: 'No token provided, authentication failed.' });
+        return res.json({ username: null });
     }
     try {
         const decoded = jwt.verify(req.cookies.token, 'your_jwt_secret');
-        const user = await User.findById(decoded.userId).select('username photoUrl');
-        if (!user) {
-            return res.status(404).json({ error: 'User not found' });
-        }
-        res.json({ username: user.username, photoUrl: user.photoUrl });
+        const user = await User.findById(decoded.userId).populate('createdCoins');
+        res.json({
+            username: user.username,
+            photoUrl: user.photoUrl,
+            createdCoins: user.createdCoins  // Include the created coins
+        });
     } catch (err) {
-        res.status(500).json({ error: 'Failed to authenticate token.' });
+        res.json({ username: null });
     }
 });
+
 
 // GET route to fetch all users
 app.get('/users', async (req, res) => {

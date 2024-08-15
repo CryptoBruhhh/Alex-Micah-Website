@@ -22,8 +22,12 @@
             <img id="userPhoto" src="https://via.placeholder.com/150" alt="Profile Picture" />
             <p id="username">Username: Loading...</p>
         </div>
+        <div id="createdCoins">
+            <h2>My Created Coins</h2>
+            <ul id="coinList"></ul>
+        </div>
     </div>
-
+    
     <script>
         fetch('/user-info')
         .then(response => {
@@ -35,11 +39,25 @@
         .then(data => {
             document.getElementById('userPhoto').src = data.photoUrl || 'https://via.placeholder.com/150'; // Use a default or provided photo URL
             document.getElementById('username').textContent = 'Username: ' + data.username;
+    
+            // Display created coins
+            const coinList = document.getElementById('coinList');
+            if (data.createdCoins && data.createdCoins.length > 0) {
+                data.createdCoins.forEach(coin => {
+                    const li = document.createElement('li');
+                    li.textContent = `Coin: ${coin.name}, Ticker: ${coin.ticker}`;
+                    coinList.appendChild(li);
+                });
+            } else {
+                coinList.textContent = 'No coins created yet.';
+            }
         })
         .catch(error => {
             document.getElementById('username').textContent = 'Failed to load user data';
             console.error('Error:', error);
         });
     </script>
+
+
 </body>
 </html>

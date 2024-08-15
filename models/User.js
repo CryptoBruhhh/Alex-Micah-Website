@@ -14,7 +14,8 @@ const UserSchema = new mongoose.Schema({
     photoUrl: {
         type: String,
         default: '' // or you can link to a default image if you prefer
-    }
+    },
+    createdCoins: [{ type: String }]       // Array of created coins
 });
 
 UserSchema.pre('save', async function(next) {

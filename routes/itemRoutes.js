@@ -5,6 +5,7 @@ const crypto = require('crypto');
 const Item = require('../models/Item');
 // itemRoutes.js
 const { isAuthenticated } = require('./auth');
+const User = require('../models/User'); // Import the User model
 
 
 // Ensure the 'uploads' directory exists
@@ -46,27 +47,40 @@ function generateTicker(name) {
     return name.substring(0, 3).toUpperCase() + '-' + crypto.randomBytes(3).toString('hex').toUpperCase();
 }
 
-// POST route for creating an item
+// Route for creating an item
 router.post('/', isAuthenticated, upload.fields([
     { name: 'icon', maxCount: 1 },
     { name: 'banner', maxCount: 1 },
     { name: 'artwork', maxCount: 5 }
 ]), async (req, res) => {
+    console.log(req.body); // Log the received form data
+    console.log(req.files); // Log file data
     try {
         const { name, description, countdown } = req.body;
         const ticker = generateTicker(name);
         const endTime = new Date(Date.now() + countdown * 3600000);
 
+        // Create a new item (coin)
         const newItem = new Item({
             name,
             description,
             ticker,
-            icon: req.files.icon ? req.files.icon[0].path : '',
-            banner: req.files.banner ? req.files.banner[0].path : '',
-            artwork: req.files.artwork ? req.files.artwork.map(file => file.path) : [],
-            endTime
+            // Store only the relative paths for the images
+            icon: req.files.icon ? path.join('uploads', path.basename(req.files.icon[0].path)) : '',
+            banner: req.files.banner ? path.join('uploads', path.basename(req.files.banner[0].path)) : '',
+            artwork: req.files.artwork ? req.files.artwork.map(file => path.join('uploads', path.basename(file.path))) : [],
+            endTime,
+            createdBy: req.user  // Store the logged-in user's ID
         });
+
+        // Save the new item
         await newItem.save();
+
+        // Find the logged-in user and update their createdCoins array
+        const user = await User.findById(req.user);
+        user.createdCoins.push(ticker);
+        await user.save();
+
         res.status(201).json({ message: 'Prelaunch posted successfully!' });
     } catch (error) {
         console.error('Failed to create item:', error);
