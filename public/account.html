@@ -44,23 +44,14 @@
             document.getElementById('userPhoto').src = data.photoUrl || 'https://via.placeholder.com/150'; // Use a default or provided photo URL
             document.getElementById('username').textContent = 'Username: ' + data.username;
 
-            // Now fetch the details of the created coins
-            return fetch('/user-coins');
-        })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Failed to fetch user coins');
-            }
-            return response.json();
-        })
-        .then(coins => {
+            // Handle created coins
             const coinsList = document.getElementById('coinsList');
             coinsList.innerHTML = ''; // Clear the loading text
 
-            if (coins.length === 0) {
+            if (data.createdCoins.length === 0) {
                 coinsList.innerHTML = '<li>No coins created yet.</li>';
             } else {
-                coins.forEach(coin => {
+                data.createdCoins.forEach(coin => {
                     const listItem = document.createElement('li');
                     listItem.textContent = `Coin: ${coin.name}, Ticker: ${coin.ticker}`;
                     coinsList.appendChild(listItem);
@@ -71,6 +62,8 @@
             document.getElementById('username').textContent = 'Failed to load user data';
             console.error('Error:', error);
         });
+                
+
     </script>
 </body>
 </html>

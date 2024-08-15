@@ -74,7 +74,7 @@ app.get('/', async (req, res) => {
 //  GET route to fetch user info
 app.get('/user-info', async (req, res) => {
     if (!req.cookies.token) {
-        return res.json({ username: null });
+        return res.json({ username: null, createdCoins: [] });
     }
     try {
         const decoded = jwt.verify(req.cookies.token, 'your_jwt_secret');
