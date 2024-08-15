@@ -13,8 +13,6 @@ const multer = require('multer');
 const itemRoutes = require('./routes/itemRoutes'); // Adjust the path as necessary
 const upload = multer({ dest: 'uploads/' }); // Adjust storage settings as needed
 
-console.log("Mongo URI: ", process.env.MONGO_URI);
-
 // Connect to MongoDB
 mongoose.connect(process.env.MONGO_URI, {
     useNewUrlParser: true,
@@ -27,48 +25,42 @@ mongoose.connect(process.env.MONGO_URI, {
       console.error('Failed to connect to MongoDB', err);
   });
 
-// Add route for logging out
-app.post('/auth/logout', (req, res) => {
-    res.clearCookie('token');
-    res.redirect('/');
-});
 
-  // Middleware
-  
+
+// Middleware
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
-
 // Add middleware to serve static files
 app.use(express.static(path.join(__dirname, 'public')));
-
-
 //// Middleware to log the full path of static file requests
 app.use('/uploads', (req, res, next) => {
     const fullPath = path.join(__dirname, 'uploads', req.url);
     console.log(`Attempting to serve file from: ${fullPath}`);
     next();
 }, express.static(path.join(__dirname, 'uploads')));
-
-// Add routes for items
-app.use('/items', itemRoutes);
-// Add middleware to parse JSON request bodies
-app.use(express.json());
-
-
-
 // Add middleware to handle errors
 app.use((err, req, res, next) => {
     console.error(err.stack);
     res.status(500).send('Something broke!');
 });
-
-// Routes
-
 // Add middleware to log requests
 app.use((req, res, next) => {
     console.log(`${req.method} ${req.url}`);
     next();
 });
+// Add middleware to parse JSON request bodies
+app.use(express.json());
+
+// Routes
+// Add route for logging out
+app.post('/auth/logout', (req, res) => {
+    res.clearCookie('token');
+    res.redirect('/');
+});
+
+// Add routes for items
+app.use('/items', itemRoutes);
+
 
 // Add routes for authentication
 app.use('/auth', authRoutes);
@@ -92,11 +84,6 @@ app.get('/user-info', async (req, res) => {
     }
 });
 
-// Start the server
-app.listen(3000, () => {
-    console.log('Server is running on port 3000');
-});
-
 // GET route to fetch all users
 app.get('/users', async (req, res) => {
     try {
@@ -107,5 +94,11 @@ app.get('/users', async (req, res) => {
         res.status(500).send('Failed to fetch users');
     }
 });
+
+// Start the server
+app.listen(3000, () => {
+    console.log('Server is running on port 3000');
+});
+
 
 

@@ -3,7 +3,7 @@ const router = express.Router();
 const multer = require('multer');
 const Item = require('../models/Item');
 const mongoose = require('mongoose');
-
+const upload = multer({ storage: storage });
 
 // Configure multer for file uploads
 const storage = multer.diskStorage({
@@ -14,8 +14,6 @@ const storage = multer.diskStorage({
         cb(null, file.fieldname + '-' + Date.now() + '-' + file.originalname);
     }
 });
-
-const upload = multer({ storage: storage });
 
 // POST route for creating an item
 router.post('/', upload.fields([
@@ -56,7 +54,5 @@ router.get('/', async (req, res) => {
         res.status(500).send(error.message);
     }
 });
-
-
 
 module.exports = router;

@@ -5,6 +5,7 @@ const jwt = require('jsonwebtoken');
 const mongoose = require('mongoose');
 
 
+// Add route for signing up
 router.post('/signup', async (req, res) => {
     const { username, password } = req.body;
     try {
@@ -22,6 +23,7 @@ router.post('/signup', async (req, res) => {
     }
 });
 
+// Add route for logging in
 router.post('/login', async (req, res) => {
     const { username, password } = req.body;
     try {
@@ -41,7 +43,7 @@ router.post('/login', async (req, res) => {
     }
 });
 
-
+// Add route for logging out
 router.post('/logout', (req, res) => {
     res.clearCookie('token');
     res.redirect('/');
