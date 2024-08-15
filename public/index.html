@@ -27,18 +27,21 @@
     </header>
 
     <script>
-        // Fetch user info from the server and update the login/logout links
+        // Fetch user info from the server and update the login/logout links and profile icon
         fetch('/user-info')
             .then(response => response.json())
             .then(data => {
                 const authLinks = document.getElementById('auth-links');
                 const profileLink = document.getElementById('profileLink');
+                const profileIcon = document.getElementById('profileIcon');
+                
                 if (data.username) {
                     authLinks.innerHTML = `
                         <span>Logged in as: ${data.username}</span>
                         &nbsp;&nbsp;<a href="#" onclick="document.getElementById('logout-form').submit();">[Logout]</a>
                     `;
                     profileLink.setAttribute('href', '/account.html'); // Direct to the user account page
+                    profileIcon.setAttribute('src', data.photoUrl || 'https://via.placeholder.com/40'); // Use user’s profile picture or a placeholder
                 } else {
                     authLinks.innerHTML = `
                         <a href="/login.html">[Login]</a>
@@ -46,6 +49,9 @@
                     `;
                     profileLink.setAttribute('href', '/login.html'); // Redirect to login if not logged in
                 }
+            })
+            .catch(error => {
+                console.error('Error fetching user info:', error);
             });
     </script>
 
