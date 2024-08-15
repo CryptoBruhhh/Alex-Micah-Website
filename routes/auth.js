@@ -5,6 +5,22 @@ const jwt = require('jsonwebtoken');
 const mongoose = require('mongoose');
 
 
+// Middleware to verify if the user is authenticated
+const isAuthenticated = (req, res, next) => {
+    const token = req.cookies.token;
+    if (!token) {
+        return res.status(401).send({ error: 'You must be logged in to perform this action.' });
+    }
+    try {
+        const decoded = jwt.verify(token, 'your_jwt_secret');
+        req.user = decoded.userId;
+        next();
+    } catch (error) {
+        return res.status(401).send({ error: 'Invalid token' });
+    }
+};
+
+
 // Add route for signing up
 router.post('/signup', async (req, res) => {
     const { username, password } = req.body;
@@ -49,4 +65,4 @@ router.post('/logout', (req, res) => {
     res.redirect('/');
 });
 
-module.exports = router;
+module.exports = { router, isAuthenticated };

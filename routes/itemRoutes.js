@@ -3,6 +3,7 @@ const router = express.Router();
 const multer = require('multer');
 const Item = require('../models/Item');
 const crypto = require('crypto'); // Import the crypto module
+const { isAuthenticated } = require('./auth');
 
 // Configure multer for file uploads
 const storage = multer.diskStorage({
@@ -33,13 +34,14 @@ const upload = multer({
 });
 
 // POST route for creating an item
-router.post('/', upload.fields([
+router.post('/', isAuthenticated, upload.fields([
     { name: 'icon', maxCount: 1 },
     { name: 'banner', maxCount: 1 },
     { name: 'artwork', maxCount: 5 }
 ]), async (req, res) => {
     const { name, description, countdown } = req.body;
     const ticker = generateTicker(name);
+    const endTime = new Date(Date.now() + countdown * 3600000); // countdown hours to milliseconds
 
     try {
         const newItem = new Item({
@@ -49,10 +51,10 @@ router.post('/', upload.fields([
             icon: req.files.icon ? req.files.icon[0].path : '',
             banner: req.files.banner ? req.files.banner[0].path : '',
             artwork: req.files.artwork ? req.files.artwork.map(file => file.path) : [],
-            countdown
+            endTime
         });
         await newItem.save();
-        res.redirect('/'); // Redirect or handle response as needed
+        res.redirect('/');
     } catch (error) {
         console.error('Failed to create item:', error);
         res.status(500).send('Failed to create item');
@@ -87,6 +89,5 @@ router.get('/:ticker', async (req, res) => {
         res.status(500).send('Server error');
     }
 });
-
 
 module.exports = router;

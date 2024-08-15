@@ -25,6 +25,17 @@
             height: auto;
             margin-bottom: 10px;
         }
+
+        .url-display {
+            margin-top: 10px;
+        }
+
+        .url-display input {
+            width: 100%;
+            padding: 5px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
     </style>
     
 </head>
@@ -49,47 +60,61 @@
                 });
             });
     
-            fetch('/items')
-        .then(response => response.json())
-        .then(items => {
-            const itemList = document.querySelector('#item-list');
-            const serverBaseURL = 'http://localhost:3000/';  // Adjust based on your actual server URL
-            items.forEach(item => {
-                const div = document.createElement('div');
-                div.className = 'item-box';
-                const itemPageUrl = `${serverBaseURL}item-detail?ticker=${item.ticker}`;  // Full link to the detail page
+        fetch('/items')
+            .then(response => response.json())
+            .then(items => {
+                const itemList = document.querySelector('#item-list');
+                const serverBaseURL = 'http://localhost:3000/';  // Adjust based on your actual server URL
+                items.forEach(item => {
+                    const div = document.createElement('div');
+                    div.className = 'item-box';
+                    const itemPageUrl = `${serverBaseURL}item-detail?ticker=${item.ticker}`;
 
-                div.innerHTML = `
-                    <a href="${itemPageUrl}">
-                        <img src="${serverBaseURL + item.icon}" alt="Icon of ${item.name}" style="cursor:pointer;">
-                    </a>
-                    <a href="${itemPageUrl}" style="text-decoration:none; color:inherit;">
-                        <h3>${item.name}</h3>
-                    </a>
-                    <p>${item.description}</p>
-                    <p>Ticker: ${item.ticker}</p>
-                    <p>Countdown: ${item.countdown} hours</p>
-                    <a href="${itemPageUrl}">View Details</a>
-                    <div class="url-display">
-                        <label>Item URL:</label>
-                        <input type="text" value="${itemPageUrl}" readonly onclick="this.select();">
-                    </div>
-                `;
-                itemList.appendChild(div);
-            });
-        })
-        .catch(error => console.error('Error loading items:', error));
-    
-        function copyToClipboard(elementId) {
-            var copyText = document.getElementById(elementId);
-            copyText.select();
-            copyText.setSelectionRange(0, 99999); /* For mobile devices */
-            navigator.clipboard.writeText(copyText.value).then(() => {
-                alert('Copied to clipboard!');
-            });
+                    // Create countdown element
+                    const countdownElement = document.createElement('p');
+                    countdownElement.id = `countdown-${item._id}`;
+
+                    div.innerHTML = `
+                        <a href="${itemPageUrl}">
+                            <img src="${serverBaseURL + item.icon}" alt="Icon of ${item.name}" style="cursor:pointer;">
+                        </a>
+                        <a href="${itemPageUrl}" style="text-decoration:none; color:inherit;">
+                            <h3>${item.name}</h3>
+                        </a>
+                        <p>${item.description}</p>
+                        <p>Ticker: ${item.ticker}</p>
+                        <a href="${itemPageUrl}">View Details</a>
+                        <div class="url-display">
+                            <label>Item URL:</label>
+                            <input type="text" value="${itemPageUrl}" readonly onclick="this.select();">
+                        </div>
+                    `;
+                    div.appendChild(countdownElement); // Append the countdown paragraph
+                    itemList.appendChild(div);
+
+                    // Start the countdown
+                    updateCountdown(countdownElement, new Date(item.endTime));
+                });
+            })
+            .catch(error => console.error('Error loading items:', error));
+
+        function updateCountdown(element, endTime) {
+            const interval = setInterval(() => {
+                const now = new Date();
+                const distance = endTime - now;
+
+                if (distance > 0) {
+                    const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+                    const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                    const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                    const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+                    element.textContent = `Countdown: ${days}d ${hours}h ${minutes}m ${seconds}s`;
+                } else {
+                    clearInterval(interval);
+                    element.textContent = "Countdown: Ended";
+                }
+            }, 1000);
         }
     </script>
-    
-
 </body>
 </html>

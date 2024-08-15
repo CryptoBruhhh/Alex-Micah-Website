@@ -8,9 +8,10 @@ const jwt = require('jsonwebtoken');
 const User = require('./models/User');
 const Item = require('./models/Item'); // Import item model
 const multer = require('multer');
-const authRoutes = require('./routes/auth');
-const itemRoutes = require('./routes/itemRoutes'); // Adjust the path as necessary
 const upload = multer({ dest: 'uploads/' }); // Adjust storage settings as needed
+const { router: authRoutes } = require('./routes/auth');
+const itemRoutes = require('./routes/itemRoutes');
+
 
 const app = express();
 
@@ -49,11 +50,7 @@ app.use('/uploads', (req, res, next) => {
     next();
 }, express.static(path.join(__dirname, 'uploads')));
 
-// Middleware to handle errors
-app.use((err, req, res, next) => {
-    console.error(err.stack);
-    res.status(500).send('Something broke!');
-});
+
 
 // Routes
 
@@ -104,8 +101,15 @@ app.get('/item-detail', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'item-details.html'));
 });
 
+// Middleware to handle errors
+app.use((err, req, res, next) => {
+    console.error(err.stack);
+    res.status(500).send('Something broke!');
+});
+
 
 // Start the server
 app.listen(3000, () => {
     console.log('Server is running on port 3000');
 });
+
