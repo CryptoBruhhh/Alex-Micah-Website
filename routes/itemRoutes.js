@@ -112,4 +112,18 @@ router.get('/:ticker', async (req, res) => {
     }
 });
 
+
+// Route to fetch coins created by the logged-in user
+router.get('/user-coins', isAuthenticated, async (req, res) => {
+    try {
+        const user = await User.findById(req.user).populate('createdCoins');
+        const coins = await Item.find({ createdBy: user._id });
+        res.status(200).json(coins);
+    } catch (error) {
+        console.error('Failed to fetch user coins:', error);
+        res.status(500).json({ error: 'Failed to fetch user coins' });
+    }
+});
+
+
 module.exports = router;

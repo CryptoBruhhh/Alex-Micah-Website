@@ -8,7 +8,7 @@ const itemSchema = new mongoose.Schema({
     banner: String, // Path or URL to where the banner is stored
     artwork: [String], // Array of paths or URLs
     endTime: { type: Date, required: true },
-    createdBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User' } // Reference to the user who created the coin
+    createdBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User' }  // Reference to the User model
 });
 
 const Item = mongoose.model('Item', itemSchema);

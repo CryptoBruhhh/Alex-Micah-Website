@@ -12,10 +12,11 @@ const UserSchema = new mongoose.Schema({
         required: true
     },
     photoUrl: {
-        type: String,
-        default: '' // or you can link to a default image if you prefer
+        type: String
     },
-    createdCoins: [{ type: String }]       // Array of created coins
+    createdCoins: [{
+        type: String  // Assuming you store the ticker as a string
+    }]
 });
 
 UserSchema.pre('save', async function(next) {

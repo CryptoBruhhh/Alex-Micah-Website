@@ -71,7 +71,7 @@ app.get('/', async (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
-// Route to fetch user info
+//  GET route to fetch user info
 app.get('/user-info', async (req, res) => {
     if (!req.cookies.token) {
         return res.json({ username: null });
@@ -79,15 +79,20 @@ app.get('/user-info', async (req, res) => {
     try {
         const decoded = jwt.verify(req.cookies.token, 'your_jwt_secret');
         const user = await User.findById(decoded.userId).populate('createdCoins');
+        if (!user) {
+            return res.status(404).json({ error: 'User not found' });
+        }
         res.json({
             username: user.username,
             photoUrl: user.photoUrl,
-            createdCoins: user.createdCoins  // Include the created coins
+            createdCoins: user.createdCoins
         });
     } catch (err) {
-        res.json({ username: null });
+        console.error('Failed to fetch user info:', err);
+        res.status(500).json({ error: 'Failed to fetch user info' });
     }
 });
+
 
 
 // GET route to fetch all users

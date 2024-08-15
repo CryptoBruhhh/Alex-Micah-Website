@@ -22,13 +22,17 @@
             <img id="userPhoto" src="https://via.placeholder.com/150" alt="Profile Picture" />
             <p id="username">Username: Loading...</p>
         </div>
-        <div id="createdCoins">
-            <h2>My Created Coins</h2>
-            <ul id="coinList"></ul>
-        </div>
     </div>
-    
+
+    <div class="created-coins">
+        <h2>My Created Coins</h2>
+        <ul id="coinsList">
+            <li>Loading...</li>
+        </ul>
+    </div>
+
     <script>
+        // Fetch user info and their created coins
         fetch('/user-info')
         .then(response => {
             if (!response.ok) {
@@ -39,17 +43,28 @@
         .then(data => {
             document.getElementById('userPhoto').src = data.photoUrl || 'https://via.placeholder.com/150'; // Use a default or provided photo URL
             document.getElementById('username').textContent = 'Username: ' + data.username;
-    
-            // Display created coins
-            const coinList = document.getElementById('coinList');
-            if (data.createdCoins && data.createdCoins.length > 0) {
-                data.createdCoins.forEach(coin => {
-                    const li = document.createElement('li');
-                    li.textContent = `Coin: ${coin.name}, Ticker: ${coin.ticker}`;
-                    coinList.appendChild(li);
-                });
+
+            // Now fetch the details of the created coins
+            return fetch('/user-coins');
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Failed to fetch user coins');
+            }
+            return response.json();
+        })
+        .then(coins => {
+            const coinsList = document.getElementById('coinsList');
+            coinsList.innerHTML = ''; // Clear the loading text
+
+            if (coins.length === 0) {
+                coinsList.innerHTML = '<li>No coins created yet.</li>';
             } else {
-                coinList.textContent = 'No coins created yet.';
+                coins.forEach(coin => {
+                    const listItem = document.createElement('li');
+                    listItem.textContent = `Coin: ${coin.name}, Ticker: ${coin.ticker}`;
+                    coinsList.appendChild(listItem);
+                });
             }
         })
         .catch(error => {
@@ -57,7 +72,5 @@
             console.error('Error:', error);
         });
     </script>
-
-
 </body>
 </html>
