@@ -3,7 +3,7 @@ const router = express.Router();
 const multer = require('multer');
 const Item = require('../models/Item');
 const mongoose = require('mongoose');
-const upload = multer({ storage: storage });
+const crypto = require('crypto');  // Import the crypto module
 
 // Configure multer for file uploads
 const storage = multer.diskStorage({
@@ -14,6 +14,7 @@ const storage = multer.diskStorage({
         cb(null, file.fieldname + '-' + Date.now() + '-' + file.originalname);
     }
 });
+const upload = multer({ storage: storage });
 
 // POST route for creating an item
 router.post('/', upload.fields([
@@ -21,7 +22,9 @@ router.post('/', upload.fields([
     { name: 'banner', maxCount: 1 },
     { name: 'artwork', maxCount: 5 }
 ]), async (req, res) => {
-    const { name, description, ticker, countdown } = req.body;
+    const { name, description, countdown } = req.body;
+    const ticker = generateTicker(name); // Function to generate ticker
+
     try {
         const newItem = new Item({
             name,
@@ -33,17 +36,17 @@ router.post('/', upload.fields([
             countdown
         });
         await newItem.save();
-
-        // Log the database name and collection name
-        console.log('Item saved in database:', mongoose.connection.name);
-        console.log('Collection name:', newItem.collection.collectionName);
-        console.log('Saved item:', newItem);
-
-        res.status(201).send('Item created successfully');
+        res.redirect('/'); // Redirect or handle response as needed
     } catch (error) {
-        res.status(500).send(error.message);
+        console.error('Failed to create item:', error);
+        res.status(500).send('Failed to create item');
     }
 });
+
+function generateTicker(name) {
+    // Simple example: first three letters of name + random hex string
+    return name.substring(0, 3).toUpperCase() + '-' + crypto.randomBytes(3).toString('hex').toUpperCase();
+}
 
 // GET route to fetch all items
 router.get('/', async (req, res) => {
