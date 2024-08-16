@@ -21,8 +21,9 @@
                         window.location.href = '/';
                     },
                     error: function(xhr){
-                        $('.error-message').text(xhr.responseText.error || 'Invalid login attempt.');
-                    }
+                    console.log('Login error:', xhr.responseText);
+                    $('.error-message').text(xhr.responseJSON ? xhr.responseJSON.error : 'Error logging in. Check console for details.');
+                }
                 });
             });
         });
