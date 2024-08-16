@@ -1,3 +1,11 @@
+CURRENT LOCAL TO AWAY CHANGES:
+(base url maybe?)
+change urls in dev and itemDetails (search "3000")
+link local:
+http://localhost:3000/
+link remote:
+http://3.25.127.158:3000/
+
 URL (If run locally)
 http://localhost:3000/
 
