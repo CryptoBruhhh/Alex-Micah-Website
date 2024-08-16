@@ -35,14 +35,14 @@
             .then(response => response.json())
             .then(item => {
                 document.getElementById('item-name').textContent = item.name;
-                document.getElementById('item-icon').src = `http://localhost:3000/${item.icon}`;
+                document.getElementById('item-icon').src = `http://3.25.127.158:3000/${item.icon}`;
                 document.getElementById('item-description').textContent = item.description;
                 document.getElementById('item-ticker').textContent = `Ticker: ${item.ticker}`;
                 document.getElementById('item-countdown').textContent = `Countdown: ${item.countdown} hours`;
 
                 // Set banner image
                 const bannerDiv = document.getElementById('item-banner');
-                bannerDiv.style.backgroundImage = `url(http://localhost:3000/${item.banner})`;
+                bannerDiv.style.backgroundImage = `url(http://3.25.127.158:3000/${item.banner})`;
                 bannerDiv.style.height = '200px'; // Adjust height as necessary
                 bannerDiv.style.width = '100%';
                 bannerDiv.style.backgroundSize = 'cover';
@@ -51,7 +51,7 @@
                 const artworkContainer = document.getElementById('item-artwork');
                 item.artwork.forEach(art => {
                     const img = document.createElement('img');
-                    img.src = `http://localhost:3000/${art}`;
+                    img.src = `http://3.25.127.158:3000/${art}`;
                     img.alt = 'Item Artwork';
                     img.style.width = '100px'; // Adjust size as necessary
                     img.style.margin = '5px';
