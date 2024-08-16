@@ -32,9 +32,14 @@ COPY IMAGE
 scp -i C:\Users\xettm\Desktop\websitefolderstuff\Keypairtest1.pem C:\Users\xettm\Desktop\Website\website-image-test.tar ubuntu@ec2-52-65-116-190.ap-southeast-2.compute.amazonaws.com
 
 RANDOM NOTES FOR UPDATING AWS:
-1. rm -rf Alex-Micah-Website
-2. sudo stop docker <containers "NAMES">
+1. sudo rm -rf Alex-Micah-Website
+2. sudo docker ps
+2. sudo docker stop <containers "NAMES">
+sudo docker stop my-app
+sudo docker stop mongodb
+3. sudo docker container prune
 3. sudo docker rmi $(sudo docker images -a -q)
+
 4. git clone https://github.com/xetters/Alex-Micah-Website.git
 5. cd Alex-Micah-Website
 6. sudo docker-compose up
