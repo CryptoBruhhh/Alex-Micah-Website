@@ -41,19 +41,27 @@
             return response.json();
         })
         .then(data => {
-            document.getElementById('userPhoto').src = data.photoUrl || 'https://via.placeholder.com/150'; // Use a default or provided photo URL
+            console.log('Received user data:', data); // Log the entire data object
+            document.getElementById('userPhoto').src = data.photoUrl || 'https://via.placeholder.com/150';
             document.getElementById('username').textContent = 'Username: ' + data.username;
 
             // Handle created coins
             const coinsList = document.getElementById('coinsList');
             coinsList.innerHTML = ''; // Clear the loading text
 
-            if (data.createdCoins.length === 0) {
+            if (!Array.isArray(data.createdCoins) || data.createdCoins.length === 0) {
                 coinsList.innerHTML = '<li>No coins created yet.</li>';
             } else {
                 data.createdCoins.forEach(coin => {
                     const listItem = document.createElement('li');
-                    listItem.textContent = `Coin: ${coin.name}, Ticker: ${coin.ticker}`;
+                    if (typeof coin === 'object') {
+                        // If coin is an object, try to access its properties
+                        const coinInfo = Object.entries(coin).map(([key, value]) => `${key}: ${value}`).join(', ');
+                        listItem.textContent = `Coin: ${coinInfo}`;
+                    } else {
+                        // If coin is not an object (e.g., it's a string), display it directly
+                        listItem.textContent = `Coin: ${coin}`;
+                    }
                     coinsList.appendChild(listItem);
                 });
             }
@@ -62,8 +70,6 @@
             document.getElementById('username').textContent = 'Failed to load user data';
             console.error('Error:', error);
         });
-                
-
     </script>
 </body>
 </html>

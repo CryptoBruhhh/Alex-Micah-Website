@@ -64,7 +64,7 @@
             .then(response => response.json())
             .then(items => {
                 const itemList = document.querySelector('#item-list');
-                const serverBaseURL = 'http://3.25.127.158:3000/';  // Adjust based on your actual server URL
+                const serverBaseURL = 'http://localhost:3000/';  // Adjust based on your actual server URL
                 items.forEach(item => {
                     const div = document.createElement('div');
                     div.className = 'item-box';
