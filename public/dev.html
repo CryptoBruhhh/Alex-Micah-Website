@@ -8,7 +8,7 @@
     <style>
         .item-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); /* Responsive grid */
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
             gap: 20px;
             padding: 20px;
         }
@@ -21,7 +21,7 @@
         }
 
         .item-box img {
-            width: 100%; /* Makes image responsive */
+            width: 100%;
             height: auto;
             margin-bottom: 10px;
         }
@@ -35,6 +35,11 @@
             padding: 5px;
             border: 1px solid #ccc;
             border-radius: 4px;
+        }
+
+        .creator-info {
+            margin-top: 10px;
+            font-style: italic;
         }
     </style>
     
@@ -64,15 +69,17 @@
             .then(response => response.json())
             .then(items => {
                 const itemList = document.querySelector('#item-list');
-                const serverBaseURL = 'http://localhost:3000/';  // Adjust based on your actual server URL
+                const serverBaseURL = 'http://localhost:3000/';
                 items.forEach(item => {
                     const div = document.createElement('div');
                     div.className = 'item-box';
                     const itemPageUrl = `${serverBaseURL}item-detail?ticker=${item.ticker}`;
 
-                    // Create countdown element
                     const countdownElement = document.createElement('p');
                     countdownElement.id = `countdown-${item._id}`;
+
+                    const creatorElement = document.createElement('p');
+                    creatorElement.className = 'creator-info';
 
                     div.innerHTML = `
                         <a href="${itemPageUrl}">
@@ -89,11 +96,19 @@
                             <input type="text" value="${itemPageUrl}" readonly onclick="this.select();">
                         </div>
                     `;
-                    div.appendChild(countdownElement); // Append the countdown paragraph
+                    div.appendChild(countdownElement);
+                    div.appendChild(creatorElement);
                     itemList.appendChild(div);
 
-                    // Start the countdown
                     updateCountdown(countdownElement, new Date(item.endTime));
+
+                    if (item.createdBy && typeof item.createdBy === 'object' && item.createdBy.username) {
+                        creatorElement.textContent = `Created by: ${item.createdBy.username}`;
+                    } else if (item.createdBy) {
+                        creatorElement.textContent = `Created by user with ID: ${item.createdBy}`;
+                    } else {
+                        creatorElement.textContent = 'Creator information not available';
+                    }
                 });
             })
             .catch(error => console.error('Error loading items:', error));

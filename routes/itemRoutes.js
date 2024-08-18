@@ -97,16 +97,13 @@ router.post('/', isAuthenticated, upload.fields([
 });
 
 
-// GET route for a specific item by ticker
+// Make sure this route is also updated
 router.get('/:ticker', async (req, res) => {
     try {
-        console.log('Fetching item with ticker:', req.params.ticker);
         const item = await Item.findOne({ ticker: req.params.ticker }).populate('createdBy', 'username');
         if (!item) {
-            console.log('Item not found');
             return res.status(404).send('Item not found');
         }
-        console.log('Item found:', JSON.stringify(item, null, 2));
         res.status(200).json(item);
     } catch (error) {
         console.error('Error fetching item:', error);
@@ -114,13 +111,13 @@ router.get('/:ticker', async (req, res) => {
     }
 });
 
-
 // GET route to fetch all items
 router.get('/', async (req, res) => {
     try {
-        const items = await Item.find();
+        const items = await Item.find().populate('createdBy', 'username');
         res.status(200).json(items);
     } catch (error) {
+        console.error('Error fetching items:', error);
         res.status(500).send(error.message);
     }
 });
