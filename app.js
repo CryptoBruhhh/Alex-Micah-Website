@@ -88,7 +88,7 @@ app.get('/user-info', async (req, res) => {
 
         // Fetch the full details of the user's created coins using the ticker
         const createdCoins = await Item.find({ ticker: { $in: user.createdCoins } })
-                                       .select('name ticker endTime');
+                                       .select('name ticker endTime icon');
 
         res.json({
             username: user.username,
