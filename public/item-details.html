@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Item Details</title>
-    <link rel="stylesheet" href="styles.css"> <!-- Link to your common CSS file -->
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <header>
@@ -22,41 +22,74 @@
             <div id="item-artwork"></div>
             <p id="item-ticker"></p>
             <p id="item-countdown"></p>
+            <p id="item-creator"></p> <!-- New element for creator information -->
         </div>
     </div>
 
     <script>
-        // Extract the ticker from the URL
         const params = new URLSearchParams(window.location.search);
         const ticker = params.get('ticker');
-
-        // Fetch item details from the server
+    
+        function updateCountdown(element, endTime) {
+            const interval = setInterval(() => {
+                const now = new Date();
+                const distance = endTime - now;
+    
+                if (distance > 0) {
+                    const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+                    const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                    const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                    const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+                    element.textContent = `Countdown: ${days}d ${hours}h ${minutes}m ${seconds}s`;
+                } else {
+                    clearInterval(interval);
+                    element.textContent = "Countdown: Ended";
+                }
+            }, 1000);
+        }
+    
         fetch(`/items/${ticker}`)
             .then(response => response.json())
             .then(item => {
+                console.log('Received item data:', JSON.stringify(item, null, 2));
+    
                 document.getElementById('item-name').textContent = item.name;
                 document.getElementById('item-icon').src = `http://localhost:3000/${item.icon}`;
                 document.getElementById('item-description').textContent = item.description;
                 document.getElementById('item-ticker').textContent = `Ticker: ${item.ticker}`;
-                document.getElementById('item-countdown').textContent = `Countdown: ${item.countdown} hours`;
-
+    
+                // Set up live countdown
+                const countdownElement = document.getElementById('item-countdown');
+                updateCountdown(countdownElement, new Date(item.endTime));
+    
                 // Set banner image
                 const bannerDiv = document.getElementById('item-banner');
                 bannerDiv.style.backgroundImage = `url(http://localhost:3000/${item.banner})`;
-                bannerDiv.style.height = '200px'; // Adjust height as necessary
+                bannerDiv.style.height = '200px';
                 bannerDiv.style.width = '100%';
                 bannerDiv.style.backgroundSize = 'cover';
-
+    
                 // Display artwork images
                 const artworkContainer = document.getElementById('item-artwork');
                 item.artwork.forEach(art => {
                     const img = document.createElement('img');
                     img.src = `http://localhost:3000/${art}`;
                     img.alt = 'Item Artwork';
-                    img.style.width = '100px'; // Adjust size as necessary
+                    img.style.width = '100px';
                     img.style.margin = '5px';
                     artworkContainer.appendChild(img);
                 });
+    
+                // Display creator information
+                const creatorElement = document.getElementById('item-creator');
+                console.log('Creator information:', item.createdBy);
+                if (item.createdBy && item.createdBy.username) {
+                    creatorElement.textContent = `Created by: ${item.createdBy.username}`;
+                } else if (item.createdBy) {
+                    creatorElement.textContent = `Created by user with ID: ${item.createdBy}`;
+                } else {
+                    creatorElement.textContent = 'Creator information not available';
+                }
             })
             .catch(error => console.error('Failed to load item details:', error));
     </script>

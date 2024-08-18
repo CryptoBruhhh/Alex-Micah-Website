@@ -47,12 +47,12 @@ function generateTicker(name) {
     return name.substring(0, 3).toUpperCase() + '-' + crypto.randomBytes(3).toString('hex').toUpperCase();
 }
 
-// Route for creating an item
 router.post('/', isAuthenticated, upload.fields([
     { name: 'icon', maxCount: 1 },
     { name: 'banner', maxCount: 1 },
     { name: 'artwork', maxCount: 5 }
 ]), async (req, res) => {
+    console.log('User creating item:', req.user);
     console.log(req.body); // Log the received form data
     console.log(req.files); // Log file data
     try {
@@ -73,8 +73,16 @@ router.post('/', isAuthenticated, upload.fields([
             createdBy: req.user  // Store the logged-in user's ID
         });
 
+        console.log('New item before save:', newItem);
+
         // Save the new item
         await newItem.save();
+
+        console.log('New item after save:', newItem);
+
+        // Test to check if createdBy is set correctly
+        const savedItem = await Item.findById(newItem._id).populate('createdBy', 'username');
+        console.log('Saved item with populated createdBy:', savedItem);
 
         // Find the logged-in user and update their createdCoins array
         const user = await User.findById(req.user);
@@ -88,6 +96,25 @@ router.post('/', isAuthenticated, upload.fields([
     }
 });
 
+
+// GET route for a specific item by ticker
+router.get('/:ticker', async (req, res) => {
+    try {
+        console.log('Fetching item with ticker:', req.params.ticker);
+        const item = await Item.findOne({ ticker: req.params.ticker }).populate('createdBy', 'username');
+        if (!item) {
+            console.log('Item not found');
+            return res.status(404).send('Item not found');
+        }
+        console.log('Item found:', JSON.stringify(item, null, 2));
+        res.status(200).json(item);
+    } catch (error) {
+        console.error('Error fetching item:', error);
+        res.status(500).send('Server error');
+    }
+});
+
+
 // GET route to fetch all items
 router.get('/', async (req, res) => {
     try {
@@ -95,20 +122,6 @@ router.get('/', async (req, res) => {
         res.status(200).json(items);
     } catch (error) {
         res.status(500).send(error.message);
-    }
-});
-
-// GET route for a specific item by ticker
-router.get('/:ticker', async (req, res) => {
-    try {
-        const item = await Item.findOne({ ticker: req.params.ticker });
-        if (!item) {
-            return res.status(404).send('Item not found');
-        }
-        res.status(200).json(item);
-    } catch (error) {
-        console.error('Error fetching item:', error);
-        res.status(500).send('Server error');
     }
 });
 
