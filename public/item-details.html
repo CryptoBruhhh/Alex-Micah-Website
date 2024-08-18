@@ -179,7 +179,7 @@
             .then(response => response.json())
             .then(item => {
                 document.getElementById('item-name').textContent = item.name;
-                document.getElementById('item-icon').style.backgroundImage = `url(http://localhost:3000/${item.icon})`;
+                document.getElementById('item-icon').style.backgroundImage = `url(http://3.25.127.158:3000/${item.icon})`;
                 document.getElementById('item-icon').style.backgroundSize = 'cover';
                 document.getElementById('item-icon').textContent = '';
                 document.getElementById('item-description').textContent = item.description;
@@ -190,7 +190,7 @@
 
                 // Set banner image
                 const bannerDiv = document.getElementById('item-banner');
-                bannerDiv.style.backgroundImage = `url(http://localhost:3000/${item.banner})`;
+                bannerDiv.style.backgroundImage = `url(http://3.25.127.158:3000/${item.banner})`;
                 bannerDiv.style.backgroundSize = 'cover';
                 bannerDiv.textContent = '';
 
@@ -199,7 +199,7 @@
                 item.artwork.forEach((art, index) => {
                     if (index < 8) { // Limit to 8 artwork images
                         const artworkDiv = artworkSection.children[index];
-                        artworkDiv.style.backgroundImage = `url(http://localhost:3000/${art})`;
+                        artworkDiv.style.backgroundImage = `url(http://3.25.127.158:3000/${art})`;
                         artworkDiv.style.backgroundSize = 'cover';
                         artworkDiv.textContent = '';
                     }
