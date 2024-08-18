@@ -274,3 +274,97 @@ button[type="submit"] {
 button[type="submit"]:hover {
     background-color: #80b983;
 }
+
+/* Main Content Styles */
+.mc-main-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.mc-h1 {
+    text-align: center;
+    font-size: 36px;
+    margin-bottom: 20px;
+}
+
+.mc-featured-item {
+    border: 2px solid transparent; /* Default border set to transparent */
+    padding: 10px;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.mc-featured-item:hover {
+    border: 2px solid black; /* Border changes to black on hover */
+}
+
+.mc-item {
+    border: 2px solid transparent; /* Default border set to transparent */
+    padding: 10px;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.mc-item:hover {
+    border: 2px solid black; /* Border changes to black on hover */
+}
+
+
+.mc-featured-item img {
+    max-width: 150px; /* Larger size for featured item icon */
+    max-height: 150px;
+    width: auto; /* Adjusts width to maintain aspect ratio */
+    height: auto; /* Adjusts height to maintain aspect ratio */
+    object-fit: cover;
+    margin: 10px auto;
+    display: block;
+}
+
+.mc-item-icon {
+    max-width: 100px; /* Maintain size limits for regular items */
+    max-height: 100px;
+    width: auto;
+    height: auto;
+    object-fit: cover;
+    margin: 10px auto;
+    display: block;
+}
+
+.mc-create-prelaunch {
+    text-align: center;
+    margin: 20px 0;
+}
+
+.mc-create-prelaunch a {
+    font-size: 24px;
+    text-decoration: none;
+    color: black;
+}
+
+.mc-search-bar {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+.mc-search-bar input {
+    width: 300px;
+    padding: 5px;
+    margin-left: 10px;
+}
+
+.mc-items-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+}
+
+.mc-item h3, .mc-item p {
+    text-align: center; /* Center aligns the text for names, creators, and countdown */
+}
+
+.countdown {
+    font-size: 24px; /* Larger font size for better visibility */
+    font-weight: bold; /* Bold for emphasis */
+}

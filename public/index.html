@@ -7,7 +7,6 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-
     <header>
         <div class="logo"><a href="/">PRELAUNCH.MEME</a></div>
         <nav>
@@ -19,15 +18,38 @@
             <span id="auth-links">
                 <!-- Links will be populated based on user login status -->
             </span>
-            <!-- Make the image a link that will go to the user account page -->
             <a href="#" id="profileLink">
-                <img src="profile-pic.jpg" alt="Profile Picture" id="profileIcon"> <!-- Default profile picture -->
+                <img src="profile-pic.jpg" alt="Profile Picture" id="profileIcon">
             </a>
         </div>
     </header>
 
+    <div class="mc-main-content">
+        <h1 class="mc-h1">Moonin'</h1>
+        
+        <div id="featured-item" class="mc-featured-item">
+            <!-- Featured item will be inserted here -->
+        </div>
+
+        <div class="mc-create-prelaunch">
+            <a href="create-item.html">[CREATE A PRELAUNCH]</a>
+        </div>
+		
+        <!-- ADD THIS LATER MAYBE
+        <div class="mc-search-bar">
+            <button id="filter-btn">Filter</button>
+            <input type="text" id="search-input" placeholder="Search...">
+        </div>
+        -->
+
+        <div id="items-grid" class="mc-items-grid">
+            <!-- Items will be dynamically inserted here -->
+        
+        </div>
+    </div>
+
     <script>
-        // Fetch user info from the server and update the login/logout links and profile icon
+        // Fetch user info and update auth links
         fetch('/user-info')
             .then(response => response.json())
             .then(data => {
@@ -41,73 +63,102 @@
                         &nbsp;&nbsp;<a href="#" onclick="document.getElementById('logout-form').submit();">[Logout]</a>
                         &nbsp;&nbsp;<a href="/account.html">[View account]</a>
                     `;
-                    profileLink.setAttribute('href', '/account.html'); // Direct to the user account page
-                    profileIcon.setAttribute('src', data.photoUrl || 'https://via.placeholder.com/40'); // Use user’s profile picture or a placeholder
+                    profileLink.setAttribute('href', '/account.html');
+                    profileIcon.setAttribute('src', data.photoUrl || 'https://via.placeholder.com/40');
                 } else {
                     authLinks.innerHTML = `
                         <a href="/login.html">[Login]</a>
                         &nbsp;&nbsp;<a href="/signup.html">[Create Account]</a>
                     `;
-                    profileLink.setAttribute('href', '/login.html'); // Redirect to login if not logged in
+                    profileLink.setAttribute('href', '/login.html');
                 }
             })
             .catch(error => {
                 console.error('Error fetching user info:', error);
             });
+
+        // Function to create an item element
+        function createItemElement(item, isFeatured = false) {
+            const itemElement = document.createElement('div');
+            itemElement.className = isFeatured ? 'mc-featured-item' : 'mc-item';
+            itemElement.innerHTML = `
+                <h3>${item.name}</h3>
+                <img src="${item.icon}" alt="${item.name} icon" class="mc-item-icon">
+                <p class="countdown" data-endtime="${item.endTime}">Countdown: Loading...</p>
+                <p>Creator: ${item.createdBy.username}</p>
+            `;
+            return itemElement;
+        }
+
+
+        // Function to update countdown
+        function updateCountdown(element, endTime) {
+            const countdownElement = element.querySelector('.countdown');
+            const interval = setInterval(() => {
+                const now = new Date();
+                const distance = new Date(endTime) - now;
+
+                if (distance > 0) {
+                    const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+                    const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                    const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                    const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+                    countdownElement.textContent = `${hours}h ${minutes}m ${seconds}s`;
+                } else {
+                    clearInterval(interval);
+                    countdownElement.textContent = "Countdown: Ended";
+                }
+            }, 1000);
+        }
+
+        // Fetch items and display them
+        fetch('/items')
+            .then(response => response.json())
+            .then(items => {
+                const featuredItemContainer = document.getElementById('featured-item');
+                const itemsGrid = document.getElementById('items-grid');
+
+                if (items.length > 0) {
+                    const featuredItem = items[0];
+                    const featuredItemElement = createItemElement(featuredItem, true);
+                    featuredItemContainer.appendChild(featuredItemElement);
+                    updateCountdown(featuredItemElement, featuredItem.endTime);
+
+                    items.slice(1).forEach(item => {
+                        const itemElement = createItemElement(item);
+                        itemsGrid.appendChild(itemElement);
+                        updateCountdown(itemElement, item.endTime);
+                    });
+                } else {
+                    featuredItemContainer.innerHTML = '<p>No items available</p>';
+                }
+            })
+            .catch(error => {
+                console.error('Error fetching items:', error);
+            });
+
+        // Search functionality
+        const searchInput = document.getElementById('search-input');
+        searchInput.addEventListener('input', function() {
+            const searchTerm = this.value.toLowerCase();
+            const items = document.querySelectorAll('.item');
+            items.forEach(item => {
+                const itemName = item.querySelector('h3').textContent.toLowerCase();
+                if (itemName.includes(searchTerm)) {
+                    item.style.display = '';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        });
+
+        // Filter functionality (placeholder)
+        const filterBtn = document.getElementById('filter-btn');
+        filterBtn.addEventListener('click', function() {
+            alert('Filter functionality to be implemented');
+        });
     </script>
 
     <form id="logout-form" action="/auth/logout" method="POST" style="display: none;"></form>
-
-    <div class="main-content">
-        <h1 style="text-align: center; margin-top: 20px;">Moonin'</h1>
-        
-        <div class="profile-info">
-            <img src="profile-pic.jpg" alt="Profile Picture">
-            <p><b>Coin Selected</b></p>
-            <p><b>Created by: Username</b></p>
-        </div>
-
-        <div class="clock-timer">
-            <p><b>00:00:00</b></p>
-        </div>
-
-        <div class="cyber-font">
-            <a href="create-item.html">[CREATE A PRELAUNCH]</a>
-        </div>
-        
-
-        <div class="search-bar">
-            <button>Filter</button>
-            <input type="text" placeholder="Search...">
-        </div>
-
-        <div class="listings">
-            <div class="listing-item">
-                <p>Coin Name</p>
-                <img src="listing1.jpg" alt="Listing Image">
-                <p>XX Minutes</p>
-                <p>XX Members</p>
-            </div>
-            <div class="listing-item">
-                <p>Coin Name</p>
-                <img src="listing1.jpg" alt="Listing Image">
-                <p>XX Minutes</p>
-                <p>XX Members</p>
-            </div>
-            <div class="listing-item">
-                <p>Coin Name</p>
-                <img src="listing1.jpg" alt="Listing Image">
-                <p>XX Minutes</p>
-                <p>XX Members</p>
-            </div>
-            <div class="listing-item">
-                <p>Coin Name</p>
-                <img src="listing1.jpg" alt="Listing Image">
-                <p>XX Minutes</p>
-                <p>XX Members</p>
-            </div>
-        </div>
-    </div>
-
 </body>
 </html>
