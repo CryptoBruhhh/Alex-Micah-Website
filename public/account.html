@@ -5,6 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>User Account</title>
     <link rel="stylesheet" href="styles.css">
+    <style>
+        .coin-item {
+            margin-bottom: 20px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        .countdown {
+            font-weight: bold;
+        }
+    </style>
 </head>
 <body>
     <header>
@@ -26,13 +37,30 @@
 
     <div class="created-coins">
         <h2>My Created Coins</h2>
-        <ul id="coinsList">
-            <li>Loading...</li>
-        </ul>
+        <div id="coinsList">
+            <p>Loading...</p>
+        </div>
     </div>
 
     <script>
-        // Fetch user info and their created coins
+        function updateCountdown(element, endTime) {
+            const interval = setInterval(() => {
+                const now = new Date();
+                const distance = endTime - now;
+
+                if (distance > 0) {
+                    const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+                    const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                    const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                    const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+                    element.textContent = `${days}d ${hours}h ${minutes}m ${seconds}s`;
+                } else {
+                    clearInterval(interval);
+                    element.textContent = "Ended";
+                }
+            }, 1000);
+        }
+
         fetch('/user-info')
         .then(response => {
             if (!response.ok) {
@@ -41,28 +69,44 @@
             return response.json();
         })
         .then(data => {
-            console.log('Received user data:', data); // Log the entire data object
+            console.log('Received user data:', data);
             document.getElementById('userPhoto').src = data.photoUrl || 'https://via.placeholder.com/150';
             document.getElementById('username').textContent = 'Username: ' + data.username;
 
-            // Handle created coins
             const coinsList = document.getElementById('coinsList');
             coinsList.innerHTML = ''; // Clear the loading text
 
             if (!Array.isArray(data.createdCoins) || data.createdCoins.length === 0) {
-                coinsList.innerHTML = '<li>No coins created yet.</li>';
+                coinsList.innerHTML = '<p>No coins created yet.</p>';
             } else {
                 data.createdCoins.forEach(coin => {
-                    const listItem = document.createElement('li');
-                    if (typeof coin === 'object') {
-                        // If coin is an object, try to access its properties
-                        const coinInfo = Object.entries(coin).map(([key, value]) => `${key}: ${value}`).join(', ');
-                        listItem.textContent = `Coin: ${coinInfo}`;
+                    const coinDiv = document.createElement('div');
+                    coinDiv.className = 'coin-item';
+                    
+                    const nameElement = document.createElement('h3');
+                    nameElement.textContent = coin.name;
+                    
+                    const tickerElement = document.createElement('p');
+                    tickerElement.textContent = `Ticker: ${coin.ticker}`;
+                    
+                    const countdownElement = document.createElement('p');
+                    countdownElement.className = 'countdown';
+                    countdownElement.textContent = 'Countdown: ';
+                    
+                    const countdownValueElement = document.createElement('span');
+                    countdownElement.appendChild(countdownValueElement);
+                    
+                    coinDiv.appendChild(nameElement);
+                    coinDiv.appendChild(tickerElement);
+                    coinDiv.appendChild(countdownElement);
+                    
+                    coinsList.appendChild(coinDiv);
+                    
+                    if (coin.endTime) {
+                        updateCountdown(countdownValueElement, new Date(coin.endTime));
                     } else {
-                        // If coin is not an object (e.g., it's a string), display it directly
-                        listItem.textContent = `Coin: ${coin}`;
+                        countdownValueElement.textContent = 'Not available';
                     }
-                    coinsList.appendChild(listItem);
                 });
             }
         })

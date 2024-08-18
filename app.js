@@ -75,17 +75,25 @@ app.get('/', async (req, res) => {
 app.get('/user-info', async (req, res) => {
     if (!req.cookies.token) {
         return res.json({ username: null, createdCoins: [] });
+        console.log('User:', user);
+        console.log('Created Coins (tickers):', user.createdCoins);
+        console.log('Found Items:', createdCoins);
     }
     try {
         const decoded = jwt.verify(req.cookies.token, 'your_jwt_secret');
-        const user = await User.findById(decoded.userId).populate('createdCoins');
+        const user = await User.findById(decoded.userId);
         if (!user) {
             return res.status(404).json({ error: 'User not found' });
         }
+
+        // Fetch the full details of the user's created coins using the ticker
+        const createdCoins = await Item.find({ ticker: { $in: user.createdCoins } })
+                                       .select('name ticker endTime');
+
         res.json({
             username: user.username,
             photoUrl: user.photoUrl,
-            createdCoins: user.createdCoins
+            createdCoins: createdCoins
         });
     } catch (err) {
         console.error('Failed to fetch user info:', err);
@@ -125,3 +133,4 @@ app.listen(3000, () => {
     console.log('Server is running on port 3000');
 });
 
+module.exports = app;
