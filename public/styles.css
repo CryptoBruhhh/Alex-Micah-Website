@@ -289,14 +289,19 @@ button[type="submit"]:hover {
 }
 
 .mc-featured-item {
-    border: 2px solid transparent; /* Default border set to transparent */
+    border: 2px solid transparent;
     padding: 10px;
     margin-bottom: 20px;
     text-align: center;
+    box-sizing: border-box;
 }
 
 .mc-featured-item:hover {
-    border: 2px solid black; /* Border changes to black on hover */
+    border: 2px solid black;
+}
+
+.mc-featured-item .item-content {
+    border: none;
 }
 
 .mc-item {
@@ -312,6 +317,7 @@ button[type="submit"]:hover {
 
 
 .mc-featured-item img {
+    border: none; /* Removes any border from the image */
     max-width: 150px; /* Larger size for featured item icon */
     max-height: 150px;
     width: auto; /* Adjusts width to maintain aspect ratio */
@@ -322,7 +328,7 @@ button[type="submit"]:hover {
 }
 
 .mc-item-icon {
-    max-width: 100px; /* Maintain size limits for regular items */
+    max-width: 100px;
     max-height: 100px;
     width: auto;
     height: auto;
@@ -336,10 +342,11 @@ button[type="submit"]:hover {
     margin: 20px 0;
 }
 
-.mc-create-prelaunch a {
-    font-size: 24px;
-    text-decoration: none;
-    color: black;
+.mc-create-prelaunch a img {
+    max-width: 100%; /* Ensures the image is not bigger than its container */
+    height: auto; /* Keeps the aspect ratio intact */
+    display: block; /* Centers the image in the block */
+    margin: 0 auto; /* Additional centering for the image */
 }
 
 .mc-search-bar {

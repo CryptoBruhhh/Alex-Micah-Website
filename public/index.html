@@ -25,14 +25,16 @@
     </header>
 
     <div class="mc-main-content">
-        <h1 class="mc-h1">Moonin'</h1>
+        <h1 class="mc-h1">Moonin'</h1> <img src="rocket.png" alt="rocket-jpg">
         
-        <div id="featured-item" class="mc-featured-item">
+        <div id="featured-item-container">
             <!-- Featured item will be inserted here -->
         </div>
 
         <div class="mc-create-prelaunch">
-            <a href="create-item.html">[CREATE A PRELAUNCH]</a>
+            <a href="create-item.html">
+                <img src="create-a-prelaunch.png" alt="Create a Prelaunch">
+            </a>
         </div>
 		
         <!-- ADD THIS LATER MAYBE
@@ -79,16 +81,18 @@
 
         // Function to create an item element
         function createItemElement(item, isFeatured = false) {
-            const itemElement = document.createElement('div');
-            itemElement.className = isFeatured ? 'mc-featured-item' : 'mc-item';
-            itemElement.innerHTML = `
+        const itemElement = document.createElement('div');
+        itemElement.className = isFeatured ? 'mc-featured-item' : 'mc-item';
+        itemElement.innerHTML = `
+            <div class="item-content">
                 <h3>${item.name}</h3>
                 <img src="${item.icon}" alt="${item.name} icon" class="mc-item-icon">
                 <p class="countdown" data-endtime="${item.endTime}">Countdown: Loading...</p>
                 <p>Creator: ${item.createdBy.username}</p>
-            `;
-            return itemElement;
-        }
+            </div>
+        `;
+        return itemElement;
+    }
 
 
         // Function to update countdown
@@ -115,7 +119,7 @@
         fetch('/items')
             .then(response => response.json())
             .then(items => {
-                const featuredItemContainer = document.getElementById('featured-item');
+                const featuredItemContainer = document.getElementById('featured-item-container');
                 const itemsGrid = document.getElementById('items-grid');
 
                 if (items.length > 0) {
