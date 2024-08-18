@@ -4,92 +4,208 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Item Details</title>
-    <link rel="stylesheet" href="styles.css">
+    <style>
+        body, html {
+            font-family: 'Courier New', monospace;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-size: 18px;
+        }
+        header {
+            background-color: #f0f0f0;
+            padding: 10px 20px;
+            text-align: left;
+        }
+        header a {
+            text-decoration: none;
+            color: black;
+            font-weight: bold;
+            font-size: 24px;
+        }
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 30px;
+            display: grid;
+            grid-template-columns: 1fr 2fr 1fr;
+            gap: 30px;
+        }
+        .left-section {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            height: 100%;
+        }
+
+        .icon-section {
+            border: 3px solid black;
+            aspect-ratio: 1 / 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 32px;
+            margin-bottom: 20px; /* Add space below the icon */
+        }
+        .main-section {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            font-weight: bold;
+        }
+        .name {
+            font-size: 48px;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+        .creator {
+            font-size: 24px;
+            margin-bottom: 30px;
+        }
+        .small-images {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        .small-image {
+            border: 2px solid black;
+            width: 80px;
+            height: 80px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 14px;
+        }
+        .countdown, .member-count {
+            font-size: 36px;
+            margin-bottom: 20px;
+        }
+        .description-section {
+            border: 3px solid black;
+            padding: 20px;
+            font-size: 20px;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+        .artwork-section {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+        }
+        .artwork {
+            border: 2px solid black;
+            aspect-ratio: 1 / 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 16px;
+        }
+        .banner {
+            grid-column: span 4;
+            border: 3px solid black;
+            height: 150px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 32px;
+        }
+    </style>
 </head>
 <body>
     <header>
-        <div class="logo"><a href="/">PRELAUNCH.MEME</a></div>
+        <a href="/">PRELAUNCH.MEME</a>
     </header>
-
-    <div class="item-details-container">
-        <div id="item-banner" class="item-banner">
-            <!-- Banner image will go here, styled in CSS -->
+    <div class="container">
+        <div class="left-section">
+            <div class="icon-section" id="item-icon">Icon here</div>
+            <div class="artwork-section">
+                <div class="artwork">Artwork here</div>
+                <div class="artwork">Artwork here</div>
+                <div class="artwork">Artwork here</div>
+                <div class="artwork">Artwork here</div>
+                <div class="artwork">Artwork here</div>
+                <div class="artwork">Artwork here</div>
+                <div class="artwork">Artwork here</div>
+                <div class="artwork">Artwork here</div>
+                <div class="banner" id="item-banner">Banner here</div>
+            </div>
         </div>
-        <div class="item-content">
-            <h1 id="item-name"></h1>
-            <img id="item-icon" src="" alt="Item Icon">
-            <p id="item-description"></p>
-            <div id="item-artwork"></div>
-            <p id="item-ticker"></p>
-            <p id="item-countdown"></p>
-            <p id="item-creator"></p> <!-- New element for creator information -->
+        <div class="main-section">
+            <h1 class="name" id="item-name">NAME</h1>
+            <p class="creator" id="item-creator">CREATOR: <span>&lt;CREATOR HERE&gt;</span></p>
+            <div class="small-images">
+                <div class="small-image">Small images here</div>
+                <div class="small-image">Small images here</div>
+                <div class="small-image">Small images here</div>
+            </div>
+            <p class="countdown">COUNTDOWN:</p>
+            <p class="countdown" id="item-countdown">&lt;COUNTDOWN&gt;</p>
+            <p class="member-count" id="member-count">MEMBER COUNT:</p>
+        </div>
+        <div class="description-section">
+            <h2>DESCRIPTION</h2>
+            <p id="item-description">Description here</p>
         </div>
     </div>
 
     <script>
+        // Extract the ticker from the URL
         const params = new URLSearchParams(window.location.search);
         const ticker = params.get('ticker');
-    
+
         function updateCountdown(element, endTime) {
             const interval = setInterval(() => {
                 const now = new Date();
                 const distance = endTime - now;
-    
+
                 if (distance > 0) {
                     const days = Math.floor(distance / (1000 * 60 * 60 * 24));
                     const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
                     const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
                     const seconds = Math.floor((distance % (1000 * 60)) / 1000);
-                    element.textContent = `Countdown: ${days}d ${hours}h ${minutes}m ${seconds}s`;
+                    element.textContent = `${days}d ${hours}h ${minutes}m ${seconds}s`;
                 } else {
                     clearInterval(interval);
-                    element.textContent = "Countdown: Ended";
+                    element.textContent = "Ended";
                 }
             }, 1000);
         }
-    
+
+        // Fetch item details from the server
         fetch(`/items/${ticker}`)
             .then(response => response.json())
             .then(item => {
-                console.log('Received item data:', JSON.stringify(item, null, 2));
-    
                 document.getElementById('item-name').textContent = item.name;
-                document.getElementById('item-icon').src = `http://localhost:3000/${item.icon}`;
+                document.getElementById('item-icon').style.backgroundImage = `url(http://localhost:3000/${item.icon})`;
+                document.getElementById('item-icon').style.backgroundSize = 'cover';
+                document.getElementById('item-icon').textContent = '';
                 document.getElementById('item-description').textContent = item.description;
-                document.getElementById('item-ticker').textContent = `Ticker: ${item.ticker}`;
-    
+                document.getElementById('item-creator').innerHTML = `CREATOR: <span>${item.createdBy ? item.createdBy.username : 'Unknown'}</span>`;
+
                 // Set up live countdown
-                const countdownElement = document.getElementById('item-countdown');
-                updateCountdown(countdownElement, new Date(item.endTime));
-    
+                updateCountdown(document.getElementById('item-countdown'), new Date(item.endTime));
+
                 // Set banner image
                 const bannerDiv = document.getElementById('item-banner');
                 bannerDiv.style.backgroundImage = `url(http://localhost:3000/${item.banner})`;
-                bannerDiv.style.height = '200px';
-                bannerDiv.style.width = '100%';
                 bannerDiv.style.backgroundSize = 'cover';
-    
+                bannerDiv.textContent = '';
+
                 // Display artwork images
-                const artworkContainer = document.getElementById('item-artwork');
-                item.artwork.forEach(art => {
-                    const img = document.createElement('img');
-                    img.src = `http://localhost:3000/${art}`;
-                    img.alt = 'Item Artwork';
-                    img.style.width = '100px';
-                    img.style.margin = '5px';
-                    artworkContainer.appendChild(img);
+                const artworkSection = document.querySelector('.artwork-section');
+                item.artwork.forEach((art, index) => {
+                    if (index < 8) { // Limit to 8 artwork images
+                        const artworkDiv = artworkSection.children[index];
+                        artworkDiv.style.backgroundImage = `url(http://localhost:3000/${art})`;
+                        artworkDiv.style.backgroundSize = 'cover';
+                        artworkDiv.textContent = '';
+                    }
                 });
-    
-                // Display creator information
-                const creatorElement = document.getElementById('item-creator');
-                console.log('Creator information:', item.createdBy);
-                if (item.createdBy && item.createdBy.username) {
-                    creatorElement.textContent = `Created by: ${item.createdBy.username}`;
-                } else if (item.createdBy) {
-                    creatorElement.textContent = `Created by user with ID: ${item.createdBy}`;
-                } else {
-                    creatorElement.textContent = 'Creator information not available';
-                }
+
+                // TODO: Add logic for member count and small images if needed
             })
             .catch(error => console.error('Failed to load item details:', error));
     </script>

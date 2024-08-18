@@ -11,6 +11,17 @@
             padding: 10px;
             border: 1px solid #ccc;
             border-radius: 5px;
+            display: flex;
+            align-items: center;
+        }
+        .coin-icon {
+            width: 50px;
+            height: 50px;
+            object-fit: cover;
+            margin-right: 15px;
+        }
+        .coin-info {
+            flex-grow: 1;
         }
         .countdown {
             font-weight: bold;
@@ -83,11 +94,19 @@
                     const coinDiv = document.createElement('div');
                     coinDiv.className = 'coin-item';
                     
+                    const iconElement = document.createElement('img');
+                    iconElement.src = coin.icon ? `http://localhost:3000/${coin.icon}` : 'https://via.placeholder.com/50';
+                    iconElement.alt = `${coin.name} icon`;
+                    iconElement.className = 'coin-icon';
+                    
+                    const infoDiv = document.createElement('div');
+                    infoDiv.className = 'coin-info';
+                    
                     const nameElement = document.createElement('h3');
                     nameElement.textContent = coin.name;
                     
                     const tickerElement = document.createElement('p');
-                    tickerElement.textContent = `Ticker: ${coin.ticker}`;
+                    tickerElement.textContent = `ID: ${coin.ticker}`;
                     
                     const countdownElement = document.createElement('p');
                     countdownElement.className = 'countdown';
@@ -96,9 +115,12 @@
                     const countdownValueElement = document.createElement('span');
                     countdownElement.appendChild(countdownValueElement);
                     
-                    coinDiv.appendChild(nameElement);
-                    coinDiv.appendChild(tickerElement);
-                    coinDiv.appendChild(countdownElement);
+                    infoDiv.appendChild(nameElement);
+                    infoDiv.appendChild(tickerElement);
+                    infoDiv.appendChild(countdownElement);
+                    
+                    coinDiv.appendChild(iconElement);
+                    coinDiv.appendChild(infoDiv);
                     
                     coinsList.appendChild(coinDiv);
                     
