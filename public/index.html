@@ -5,6 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Moonin' Prelaunch</title>
     <link rel="stylesheet" href="styles.css">
+    <!-- New styles added -->
+    <style>
+        .mc-featured-item, .mc-item {
+            cursor: pointer;
+            transition: box-shadow 0.3s ease;
+        }
+        .mc-featured-item:hover, .mc-item:hover {
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+    </style>
 </head>
 <body>
     <header>
@@ -27,6 +37,7 @@
     <div class="mc-main-content">
         <h1 class="mc-h1">Moonin'</h1> <img src="rocket.png" alt="rocket-jpg">
         
+        <!-- Changed from div with class to div with id -->
         <div id="featured-item-container">
             <!-- Featured item will be inserted here -->
         </div>
@@ -36,17 +47,9 @@
                 <img src="create-a-prelaunch.png" alt="Create a Prelaunch">
             </a>
         </div>
-		
-        <!-- ADD THIS LATER MAYBE
-        <div class="mc-search-bar">
-            <button id="filter-btn">Filter</button>
-            <input type="text" id="search-input" placeholder="Search...">
-        </div>
-        -->
 
         <div id="items-grid" class="mc-items-grid">
             <!-- Items will be dynamically inserted here -->
-        
         </div>
     </div>
 
@@ -79,23 +82,28 @@
                 console.error('Error fetching user info:', error);
             });
 
-        // Function to create an item element
+        // Function to create an item element (modified)
         function createItemElement(item, isFeatured = false) {
-        const itemElement = document.createElement('div');
-        itemElement.className = isFeatured ? 'mc-featured-item' : 'mc-item';
-        itemElement.innerHTML = `
-            <div class="item-content">
-                <h3>${item.name}</h3>
-                <img src="${item.icon}" alt="${item.name} icon" class="mc-item-icon">
-                <p class="countdown" data-endtime="${item.endTime}">Countdown: Loading...</p>
-                <p>Creator: ${item.createdBy.username}</p>
-            </div>
-        `;
-        return itemElement;
-    }
+            const itemElement = document.createElement('div');
+            itemElement.className = isFeatured ? 'mc-featured-item' : 'mc-item';
+            itemElement.innerHTML = `
+                <div class="item-content">
+                    <h3>${item.name}</h3>
+                    <img src="${item.icon}" alt="${item.name} icon" class="mc-item-icon">
+                    <p class="countdown" data-endtime="${item.endTime}">Countdown: Loading...</p>
+                    <p>Creator: ${item.createdBy.username}</p>
+                </div>
+            `;
+            
+            // Make the item clickable (new)
+            itemElement.addEventListener('click', () => {
+                window.location.href = `/item-detail?ticker=${item.ticker}`;
+            });
 
+            return itemElement;
+        }
 
-        // Function to update countdown
+        // Function to update countdown (unchanged)
         function updateCountdown(element, endTime) {
             const countdownElement = element.querySelector('.countdown');
             const interval = setInterval(() => {
@@ -115,7 +123,7 @@
             }, 1000);
         }
 
-        // Fetch items and display them
+        // Fetch items and display them (modified)
         fetch('/items')
             .then(response => response.json())
             .then(items => {
@@ -141,7 +149,8 @@
                 console.error('Error fetching items:', error);
             });
 
-        // Search functionality
+        // Search functionality (commented out)
+        /*
         const searchInput = document.getElementById('search-input');
         searchInput.addEventListener('input', function() {
             const searchTerm = this.value.toLowerCase();
@@ -155,12 +164,15 @@
                 }
             });
         });
+        */
 
-        // Filter functionality (placeholder)
+        // Filter functionality (commented out)
+        /*
         const filterBtn = document.getElementById('filter-btn');
         filterBtn.addEventListener('click', function() {
             alert('Filter functionality to be implemented');
         });
+        */
     </script>
 
     <form id="logout-form" action="/auth/logout" method="POST" style="display: none;"></form>
